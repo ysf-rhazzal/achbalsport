@@ -17,7 +17,7 @@ const AdminStore = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/products');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/products');
       setProducts(response.data);
     } catch (error) {
       console.error(error);
@@ -75,7 +75,7 @@ const AdminStore = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/products/${editingId}`, formData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/products/${editingId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -86,7 +86,7 @@ const AdminStore = () => {
         confirmButtonColor: '#1a2e44', // نفس لون النادي
         });
       } else {
-        await axios.post('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/products', formData, {
+        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/products', formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -123,7 +123,7 @@ const handleDelete = async (id) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        await axios.delete(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/products/${id}`, {
+        await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/products/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
         });
         fetchProducts();
