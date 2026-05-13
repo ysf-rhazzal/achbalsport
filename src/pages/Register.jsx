@@ -4,8 +4,11 @@ import Swal from 'sweetalert2';
 
 const Register = () => {
   const [step, setStep] = useState(1);
-  const [fileNumber, setFileNumber] = useState(null); // باش نبينو رقم الملف فاللخر
+  const [fileNumber, setFileNumber] = useState(null); 
   const [loading, setLoading] = useState(false);
+  
+  // هاد الـ state زدناها باش نحلّو مشكل الـ Date فـ الآيفون
+  const [dateFocused, setDateFocused] = useState(false); 
 
   // تخزين المعلومات النصية
   const [formData, setFormData] = useState({
@@ -34,10 +37,8 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
 
-    // حيت عندنا تصاور، خاصنا نخدمو بـ FormData
     const data = new FormData();
     
-    // جمعناهم كيفما كيتسناهم الـ Backend
     data.append('childInfo', JSON.stringify({
       fullName: formData.childFullName, birthDate: formData.childBirthDate, age: formData.childAge, educationLevel: formData.childEducation, city: formData.childCity, ageCategory: formData.childCategory, preferredPosition: formData.childPosition, playedBefore: formData.childPlayedBefore === 'نعم'
     }));
@@ -59,102 +60,123 @@ const Register = () => {
       const response = await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/registrations/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setFileNumber(response.data.fileNumber); // كنخبيو رقم الملف اللي رجع من السيرفر
+      setFileNumber(response.data.fileNumber); 
     } catch (error) {
       console.error('مشكل فالتسجيل', error);
       Swal.fire({
         title: 'خطأ!',
         text: 'وقع مشكل أثناء العملية، حاول مرة أخرى',
         icon: 'error',
-        confirmButtonText: 'موافق'
-        });
-        } finally {
+        confirmButtonText: 'موافق',
+        confirmButtonColor: '#1a2e44'
+      });
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
+    <div className="max-w-3xl mx-auto py-10 px-4 font-arabic" dir="rtl">
+      <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
         <h2 className="text-3xl font-bold text-primary mb-6 text-center">سجل ولدك فـ نادي أشبال</h2>
 
-        {/* يلا سالا التسجيل بنجاح */}
         {fileNumber ? (
           <div className="text-center p-10 bg-green-50 border border-green-200 rounded-lg">
             <h3 className="text-2xl font-bold text-green-600 mb-4">تم إرسال طلبك بنجاح!</h3>
             <p className="text-lg">رقم تتبع الملف ديالك هو:</p>
-            <p className="text-3xl font-bold text-primary my-4">{fileNumber}</p>
-            <p className="text-gray-600">احتفظ بهاد الرقم باش تقدر تتبع حالة الملف ديالك من صفحة "تتبع التسجيل".</p>
+            <p className="text-4xl font-black text-primary my-4 tracking-widest">{fileNumber}</p>
+            <p className="text-gray-600 font-bold">احتفظ بهاد الرقم باش تقدر تتبع حالة الملف ديالك من صفحة "تتبع التسجيل".</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             
             {/* الخطوة 1: معلومات الطفل */}
             {step === 1 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold border-b pb-2 mb-4">1. معلومات الطفل</h3>
+              <div className="space-y-4 animate-fadeIn">
+                <h3 className="text-xl font-bold border-b pb-2 mb-4 text-primary">1. معلومات الطفل</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" name="childFullName" placeholder="الاسم الكامل للطفل" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="date" name="childBirthDate" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="number" name="childAge" placeholder="العمر" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="text" name="childEducation" placeholder="المستوى الدراسي" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="text" name="childCity" placeholder="المدينة" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <select name="childCategory" onChange={handleChange} className="w-full p-2 border rounded" required>
+                  <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  
+                  {/* هنا كاين القالب ديال تاريخ الازدياد للآيفون */}
+                  <input 
+                    type={(dateFocused || formData.childBirthDate) ? "date" : "text"} 
+                    name="childBirthDate" 
+                    placeholder="تاريخ الازدياد" 
+                    onFocus={() => setDateFocused(true)} 
+                    onBlur={(e) => {
+                      if (!e.target.value) setDateFocused(false);
+                    }}
+                    value={formData.childBirthDate}
+                    onChange={handleChange} 
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-gray-700" 
+                    required 
+                  />
+
+                  <input type="number" name="childAge" value={formData.childAge} placeholder="العمر" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  <input type="text" name="childEducation" value={formData.childEducation} placeholder="المستوى الدراسي" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  <input type="text" name="childCity" value={formData.childCity} placeholder="المدينة" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  
+                  <select name="childCategory" value={formData.childCategory} onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required>
                     <option value="">اختار الفئة العمرية</option>
-                    <option value="براعم">براعم</option>
-                    <option value="صغار">صغار</option>
-                    <option value="فتيان">فتيان</option>
+                    <option value="U10">U10</option>
+                    <option value="U11">U11</option>
+                    <option value="U13">U13</option>
+                    <option value="U15">U15</option>
+                    <option value="U17">U17</option>
+                    <option value="U19">U19</option>
+                    <option value="Senior">Senior</option>
                   </select>
-                  <input type="text" name="childPosition" placeholder="المركز المفضل (مثلا: هجوم)" onChange={handleChange} className="w-full p-2 border rounded" required />
+
+                  <input type="text" name="childPosition" value={formData.childPosition} placeholder="المركز المفضل (مثلا: هجوم)" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
                 </div>
-                <button type="button" onClick={() => setStep(2)} className="btn-primary mt-6 w-full">التالي: معلومات ولي الأمر</button>
+                <button type="button" onClick={() => setStep(2)} className="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-lg mt-6 w-full transition-colors shadow-md">التالي: معلومات ولي الأمر</button>
               </div>
             )}
 
             {/* الخطوة 2: معلومات ولي الأمر والصحة */}
             {step === 2 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold border-b pb-2 mb-4">2. معلومات ولي الأمر والمعلومات الصحية</h3>
+              <div className="space-y-4 animate-fadeIn">
+                <h3 className="text-xl font-bold border-b pb-2 mb-4 text-primary">2. معلومات ولي الأمر والمعلومات الصحية</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" name="parentFullName" placeholder="الاسم الكامل لولي الأمر" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="text" name="parentCin" placeholder="رقم البطاقة الوطنية" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="tel" name="parentPhone" placeholder="رقم الهاتف" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="tel" name="parentWhatsapp" placeholder="رقم الواتساب" onChange={handleChange} className="w-full p-2 border rounded" required />
-                  <input type="email" name="parentEmail" placeholder="البريد الإلكتروني" onChange={handleChange} className="w-full p-2 border rounded md:col-span-2" required />
-                  <textarea name="parentAddress" placeholder="العنوان السكني" onChange={handleChange} className="w-full p-2 border rounded md:col-span-2" required></textarea>
+                  <input type="text" name="parentFullName" value={formData.parentFullName} placeholder="الاسم الكامل لولي الأمر" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  <input type="text" name="parentCin" value={formData.parentCin} placeholder="رقم البطاقة الوطنية" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  <input type="tel" name="parentPhone" value={formData.parentPhone} placeholder="رقم الهاتف" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-right" dir="ltr" required />
+                  <input type="tel" name="parentWhatsapp" value={formData.parentWhatsapp} placeholder="رقم الواتساب" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-right" dir="ltr" required />
+                  <input type="email" name="parentEmail" value={formData.parentEmail} placeholder="البريد الإلكتروني" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 md:col-span-2 text-right" dir="ltr" required />
+                  <textarea name="parentAddress" value={formData.parentAddress} placeholder="العنوان السكني" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 md:col-span-2" required></textarea>
                 </div>
-                <div className="flex justify-between mt-6">
-                  <button type="button" onClick={() => setStep(1)} className="bg-gray-400 text-white px-6 py-2 rounded">السابق</button>
-                  <button type="button" onClick={() => setStep(3)} className="btn-primary">التالي: رفع الوثائق</button>
+                <div className="flex justify-between mt-8">
+                  <button type="button" onClick={() => setStep(1)} className="bg-gray-200 text-gray-700 font-bold px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">السابق</button>
+                  <button type="button" onClick={() => setStep(3)} className="bg-primary hover:bg-secondary text-white font-bold px-6 py-3 rounded-lg transition-colors shadow-md">التالي: رفع الوثائق</button>
                 </div>
               </div>
             )}
 
             {/* الخطوة 3: الوثائق */}
             {step === 3 && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold border-b pb-2 mb-4">3. رفع الوثائق</h3>
-                <div className="space-y-3">
+              <div className="space-y-4 animate-fadeIn">
+                <h3 className="text-xl font-bold border-b pb-2 mb-4 text-primary">3. رفع الوثائق</h3>
+                <div className="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-100">
                   <div>
-                    <label className="block text-sm font-bold mb-1">صورة الطفل</label>
-                    <input type="file" name="childPhoto" accept="image/*" onChange={handleFileChange} className="w-full p-2 border rounded" required />
+                    <label className="block text-sm font-bold mb-2 text-gray-700">صورة الطفل <span className="text-red-500">*</span></label>
+                    <input type="file" name="childPhoto" accept="image/*" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" required />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1">شهادة مدرسية</label>
-                    <input type="file" name="schoolCertificate" onChange={handleFileChange} className="w-full p-2 border rounded" />
+                    <label className="block text-sm font-bold mb-2 text-gray-700">شهادة مدرسية</label>
+                    <input type="file" name="schoolCertificate" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1">نسخة بطاقة ولي الأمر</label>
-                    <input type="file" name="parentCinCopy" onChange={handleFileChange} className="w-full p-2 border rounded" />
+                    <label className="block text-sm font-bold mb-2 text-gray-700">نسخة بطاقة ولي الأمر</label>
+                    <input type="file" name="parentCinCopy" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold mb-1">شهادة طبية</label>
-                    <input type="file" name="medicalCertificate" onChange={handleFileChange} className="w-full p-2 border rounded" />
+                    <label className="block text-sm font-bold mb-2 text-gray-700">شهادة طبية</label>
+                    <input type="file" name="medicalCertificate" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" />
                   </div>
                 </div>
-                <div className="flex justify-between mt-6">
-                  <button type="button" onClick={() => setStep(2)} className="bg-gray-400 text-white px-6 py-2 rounded">السابق</button>
-                  <button type="submit" disabled={loading} className="btn-secondary">
+                <div className="flex justify-between mt-8">
+                  <button type="button" onClick={() => setStep(2)} className="bg-gray-200 text-gray-700 font-bold px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">السابق</button>
+                  <button type="submit" disabled={loading} className={`text-white font-bold px-6 py-3 rounded-lg transition-colors shadow-md ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-secondary hover:bg-opacity-90'}`}>
                     {loading ? 'جاري الإرسال...' : 'تأكيد التسجيل وإرسال الملف'}
                   </button>
                 </div>
