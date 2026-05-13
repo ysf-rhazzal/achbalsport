@@ -20,7 +20,7 @@ const AdminTrainings = () => {
 
   const fetchTrainings = async () => {
     try {
-      const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/trainings');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/trainings');
       setTrainings(response.data);
     } catch (error) {
       console.error('مشكل فجلب التداريب', error);
@@ -68,7 +68,7 @@ const AdminTrainings = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/trainings/${editingId}`, trainingData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/trainings/${editingId}`, trainingData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         // تبديل alert بـ SweetAlert
@@ -79,7 +79,7 @@ const AdminTrainings = () => {
           confirmButtonColor: '#1a2e44'
         });
       } else {
-        await axios.post('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/trainings', trainingData, {
+        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/trainings', trainingData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         // تبديل alert بـ SweetAlert
@@ -119,7 +119,7 @@ const AdminTrainings = () => {
       if (result.isConfirmed) {
         const token = localStorage.getItem('adminToken');
         try {
-          await axios.delete(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/trainings/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/trainings/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           Swal.fire('تم المسح!', 'تم حذف الحصة بنجاح.', 'success');
