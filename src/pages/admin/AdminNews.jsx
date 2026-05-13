@@ -17,7 +17,7 @@ const AdminNews = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/news');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/news');
       setNews(response.data);
     } catch (error) {
       console.error('مشكل فجلب الأخبار', error);
@@ -66,7 +66,7 @@ const AdminNews = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/news/${editingId}`, formData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/news/${editingId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -76,7 +76,7 @@ const AdminNews = () => {
           confirmButtonColor: '#1a2e44'
         });
       } else {
-        await axios.post('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/news', formData, {
+        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/news', formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -113,7 +113,7 @@ const AdminNews = () => {
       if (result.isConfirmed) {
         const token = localStorage.getItem('adminToken');
         try {
-          await axios.delete(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/news/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/news/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           Swal.fire('تم المسح!', 'تم حذف الخبر بنجاح.', 'success');
