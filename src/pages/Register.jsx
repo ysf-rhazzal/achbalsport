@@ -56,7 +56,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/registrations/register', data, {
+      const response = await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/registrations/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setFileNumber(response.data.fileNumber); // كنخبيو رقم الملف اللي رجع من السيرفر
