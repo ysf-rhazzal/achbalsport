@@ -24,7 +24,7 @@ const AdminMatches = () => {
 
   const fetchMatches = async () => {
     try {
-      const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/matches');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/matches');
       setMatches(response.data);
     } catch (error) {
       console.error(error);
@@ -101,7 +101,7 @@ const AdminMatches = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/matches/${editingId}`, formData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/matches/${editingId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -111,7 +111,7 @@ const AdminMatches = () => {
           confirmButtonColor: '#1a2e44'
         });
       } else {
-        await axios.post('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/matches', formData, {
+        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/matches', formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -147,7 +147,7 @@ const AdminMatches = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/matches/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/matches/${id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
           });
           fetchMatches();
