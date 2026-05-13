@@ -9,10 +9,10 @@ const Store = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const prodRes = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/products');
+        const prodRes = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/products');
         setProducts(prodRes.data);
 
-        const setRes = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/settings');
+        const setRes = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/settings');
         const settingsData = Array.isArray(setRes.data) ? setRes.data[0] : setRes.data;
         if (settingsData && settingsData.whatsapp) {
           setWhatsappLink(settingsData.whatsapp);
