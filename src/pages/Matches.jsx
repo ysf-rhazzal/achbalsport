@@ -9,7 +9,7 @@ const Matches = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/matches');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/matches');
         // ترتيب المباريات من الأحدث إلى الأقدم
         setMatches(response.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
       } catch (error) { 
