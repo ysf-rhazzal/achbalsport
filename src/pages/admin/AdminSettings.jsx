@@ -19,7 +19,7 @@ const AdminSettings = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/settings');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/settings');
         if (response.data) {
           const s = response.data;
           setBgVideo(s.bgVideo || '');
@@ -51,7 +51,7 @@ const AdminSettings = () => {
     };
 
     try {
-      await axios.put('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/settings', settingsData, {
+      await axios.put('https://achbalsportive--youssefrhazzal9.replit.app/api/settings', settingsData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
