@@ -10,7 +10,7 @@ const NewsDetails = () => {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const response = await axios.get(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/news/${id}`);
+        const response = await axios.get(`https://achbalsportive--youssefrhazzal9.replit.app/api/news/${id}`);
         setItem(response.data);
       } catch (error) {
         console.error('Error fetching details:', error);
