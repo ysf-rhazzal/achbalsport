@@ -8,7 +8,7 @@ const LatestPlayers = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/players');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/players');
         // كنعكسو المصفوفة باش نجيبو اللخرين هما اللولين، وكنعزلو غير 3
         const recent = response.data.reverse().slice(0, 3);
         setLatestPlayers(recent);
