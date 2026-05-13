@@ -13,7 +13,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/auth/login', {
+      const response = await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/auth/login', {
         username,
         password
       });
