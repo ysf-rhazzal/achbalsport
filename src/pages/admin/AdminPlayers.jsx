@@ -19,7 +19,7 @@ const AdminPlayers = () => {
 
   const fetchPlayers = async () => {
     try {
-      const response = await axios.get('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/players');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/players');
       setPlayers(response.data);
     } catch (error) {
       console.error('مشكل فجلب اللاعبين', error);
@@ -73,7 +73,7 @@ const AdminPlayers = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/players/${editingId}`, formData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/players/${editingId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -83,7 +83,7 @@ const AdminPlayers = () => {
           confirmButtonColor: '#1a2e44'
         });
       } else {
-        await axios.post('https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/players', formData, {
+        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/players', formData, {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -120,7 +120,7 @@ const AdminPlayers = () => {
       if (result.isConfirmed) {
         const token = localStorage.getItem('adminToken');
         try {
-          await axios.delete(`https://8be10083-1e37-47e1-9fce-56446b72d950-00-3uxap2afpc8tk.janeway.replit.dev/api/players/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/players/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           Swal.fire('تم المسح!', 'تم حذف اللاعب من القاعدة.', 'success');
