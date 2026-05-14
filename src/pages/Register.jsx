@@ -95,22 +95,27 @@ const Register = () => {
                   <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
                   
                   {/* هنا حلينا المشكل ديال الآيفون بـ JavaScript نيشان */}
-                  <input 
-                    type="text" 
-                    name="childBirthDate" 
-                    placeholder="تاريخ الازدياد" 
-                    onFocus={(e) => {
-                      e.target.type = 'date';
-                      if (e.target.showPicker) e.target.showPicker(); 
-                    }} 
-                    onBlur={(e) => {
-                      if (!e.target.value) e.target.type = 'text';
-                    }}
-                    value={formData.childBirthDate}
-                    onChange={handleChange} 
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-gray-700 bg-white" 
-                    required 
-                  />
+             {/* هادي هي الطريقة المضمونة 100% للآيفون (CSS Hack) */}
+<div className="relative">
+  {/* الـ Placeholder المزور (كيبان غير ملي كيكون التاريخ خاوي) */}
+  <label 
+    className={`absolute right-4 top-3.5 text-gray-400 pointer-events-none transition-opacity ${formData.childBirthDate ? 'opacity-0' : 'opacity-100'}`}
+  >
+    تاريخ الازدياد
+  </label>
+  
+  {/* الأجندة الحقيقية */}
+  <input 
+    type="date" 
+    name="childBirthDate" 
+    value={formData.childBirthDate}
+    onChange={handleChange} 
+    /* السحر هنا: يلا كان خاوي كنردوه شفاف باش ما يبانش فيه dd/mm/yyyy، ويلا تعمر كنردوه كحل */
+    className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white transition-colors ${!formData.childBirthDate ? 'text-transparent' : 'text-gray-700'}`} 
+    required 
+  />
+</div>
+
 
                   <input type="number" name="childAge" value={formData.childAge} placeholder="العمر" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
                   <input type="text" name="childEducation" value={formData.childEducation} placeholder="المستوى الدراسي" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
