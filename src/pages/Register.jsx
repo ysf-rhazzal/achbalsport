@@ -96,25 +96,20 @@ const Register = () => {
                   
                   {/* هنا حلينا المشكل ديال الآيفون بـ JavaScript نيشان */}
              {/* هادي هي الطريقة المضمونة 100% للآيفون (CSS Hack) */}
-<div className="relative w-full">
-  {/* الإينبوت ديال التاريخ - فرضنا عليه الحجم والبوردر */}
-  <input 
-    type="date" 
-    name="childBirthDate" 
-    value={formData.childBirthDate}
-    onChange={handleChange} 
-    className="w-full p-3 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block h-[52px]" 
-    style={{ color: formData.childBirthDate ? '#374151' : 'transparent' }}
-    required 
-  />
-  
-  {/* الكلمة اللي غتبان بحال Placeholder */}
-  {!formData.childBirthDate && (
-    <span className="absolute right-4 top-3.5 text-gray-400 pointer-events-none">
-      تاريخ الازدياد
-    </span>
-  )}
-</div>
+<input 
+  type="text" 
+  name="childBirthDate" 
+  placeholder="تاريخ الازدياد" 
+  onFocus={(e) => e.target.type = 'date'} 
+  onBlur={(e) => {
+    if (!e.target.value) e.target.type = 'text';
+  }}
+  value={formData.childBirthDate}
+  onChange={handleChange} 
+  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-gray-700 bg-white" 
+  required 
+/>
+
 
 
 
