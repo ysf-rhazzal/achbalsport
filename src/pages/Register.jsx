@@ -90,26 +90,31 @@ const Register = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className={inputClass} required />
                   
-                  {/* ====== الحل الموحد لجميع الأجهزة (آيفون، أندرويد، بيسي) ====== */}
+                  {/* ====== الحل النهائي المطور ====== */}
                   <div className="relative w-full h-[52px]">
-                    {!formData.childBirthDate && (
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                        تاريخ الازدياد
-                      </span>
-                    )}
                     <input 
                       type="date" 
                       name="childBirthDate" 
                       value={formData.childBirthDate}
                       onChange={handleChange} 
-                      /* 💡 زدنا هنا [&::-webkit-calendar-picker-indicator]:opacity-0 باش نخفيو الأيقونة يلا كانت الخانة خاوية */
-                      className={`w-full h-[52px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none transition-all ${
+                      /* هنا السحر: 
+                        - peer: باش نتحكمو فالكلمة لي تحت
+                        - focus:text-gray-800: ملي تكليكي عليه يبان jj/mm/aaaa
+                        - focus:[&::-webkit...]: ملي تكليكي عليه تبان الأيقونة دالأجندة
+                      */
+                      className={`peer w-full h-[52px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none transition-all ${
                         !formData.childBirthDate 
-                          ? 'text-transparent [&::-webkit-calendar-picker-indicator]:opacity-0' 
+                          ? 'text-transparent focus:text-gray-800 [&::-webkit-calendar-picker-indicator]:opacity-0 focus:[&::-webkit-calendar-picker-indicator]:opacity-100' 
                           : 'text-gray-800'
                       }`} 
                       required 
                     />
+                    {/* الكلمة المزورة جات تحت باش تخدم بـ peer-focus */}
+                    <span className={`absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none transition-opacity peer-focus:opacity-0 ${
+                      formData.childBirthDate ? 'opacity-0' : 'opacity-100'
+                    }`}>
+                      تاريخ الازدياد
+                    </span>
                   </div>
                   {/* ================================== */}
 
@@ -119,13 +124,11 @@ const Register = () => {
                   
                   <select name="childCategory" value={formData.childCategory} onChange={handleChange} className={inputClass} required>
                     <option value="">اختار الفئة العمرية</option>
-                    <option value="U10">U10</option>
-                    <option value="U11">U11</option>
-                    <option value="U13">U13</option>
-                    <option value="U15">U15</option>
-                    <option value="U17">U17</option>
-                    <option value="U19">U19</option>
-                    <option value="Senior">Senior</option>
+                    <option value="براعم">براعم</option>
+                    <option value="تحت 10 سنوات">تحت 10 سنوات</option>
+                    <option value="تحت 11 سنوات">تحت 11 سنوات</option>
+                    <option value="تحت 13 سنوات">تحت 13 سنوات</option>
+                    <option value="تحت 15 سنوات">تحت 15 سنوات</option>
                   </select>
 
                   <input type="text" name="childPosition" value={formData.childPosition} placeholder="المركز المفضل (مثلا: هجوم)" onChange={handleChange} className={inputClass} required />
