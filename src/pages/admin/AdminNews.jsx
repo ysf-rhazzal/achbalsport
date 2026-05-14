@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
 
 const AdminNews = () => {
   const [news, setNews] = useState([]);
@@ -67,7 +67,8 @@ const AdminNews = () => {
     try {
       if (editingId) {
         await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/news/${editingId}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+          // حيدنا Content-Type باش نخليو المتصفح يتكلف ويصيفط التصويرة مزيان
+          headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
           title: 'تم التعديل!',
@@ -77,7 +78,8 @@ const AdminNews = () => {
         });
       } else {
         await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/news', formData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+          // حيدنا Content-Type حتى هنا
+          headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
           title: 'رائع!',
@@ -126,25 +128,27 @@ const AdminNews = () => {
     });
   };
 
+  const inputClass = "w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-gray-800 transition-shadow";
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg font-arabic">
+    <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg font-arabic">
       <h2 className="text-2xl font-bold mb-6 border-b pb-2 text-primary">إدارة الأخبار</h2>
 
-      <form onSubmit={handleSubmit} className={`mb-10 p-6 rounded border ${editingId ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50'}`}>
-        <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold">{editingId ? '✏️ تعديل الخبر' : '➕ إضافة خبر جديد'}</h3>
-            {editingId && <button type="button" onClick={cancelEdit} className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">إلغاء التعديل</button>}
+      <form onSubmit={handleSubmit} className={`mb-10 p-5 md:p-6 rounded-xl border ${editingId ? 'bg-yellow-50 border-yellow-200 shadow-md' : 'bg-gray-50 border-gray-200'}`}>
+        <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold text-gray-800">{editingId ? '✏️ تعديل الخبر' : '➕ إضافة خبر جديد'}</h3>
+            {editingId && <button type="button" onClick={cancelEdit} className="text-sm bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 px-4 py-2 rounded-lg transition-colors">إلغاء التعديل</button>}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
           <div>
-            <label className="block text-sm font-bold mb-1">عنوان الخبر</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-2 border rounded shadow-sm focus:ring-primary focus:border-primary" required />
+            <label className="block text-sm font-bold mb-2 text-gray-700">عنوان الخبر</label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} placeholder="مثال: فوز الأشبال في المباراة..." required />
           </div>
           
           <div>
-            <label className="block text-sm font-bold mb-1">نوع الخبر</label>
-            <select value={newsType} onChange={(e) => setNewsType(e.target.value)} className="w-full p-2 border rounded shadow-sm focus:ring-primary focus:border-primary" required>
+            <label className="block text-sm font-bold mb-2 text-gray-700">نوع الخبر</label>
+            <select value={newsType} onChange={(e) => setNewsType(e.target.value)} className={inputClass} required>
               <option value="رياضي">رياضي</option>
               <option value="إداري">إداري</option>
               <option value="إعلان">إعلان</option>
@@ -153,60 +157,109 @@ const AdminNews = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-1">تاريخ الخبر</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-2 border rounded shadow-sm focus:ring-primary focus:border-primary" required />
+            <label className="block text-sm font-bold mb-2 text-gray-700">تاريخ الخبر</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputClass} required />
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-1 flex justify-between items-center">
+            <label className="block text-sm font-bold mb-2 flex justify-between items-center text-gray-700">
               صورة الخبر
-              {existingImage && <img src={existingImage} alt="old" className="w-8 h-8 object-cover rounded border border-gray-300" />}
+              {existingImage && <img src={existingImage} alt="old" className="w-10 h-10 object-cover rounded-lg border-2 border-primary/20 shadow-sm" />}
             </label>
-            <input id="imageInput" type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} className="w-full p-2 border rounded text-sm bg-white" />
-            {editingId && <p className="text-xs text-gray-500 mt-1 italic">إلى ما ختاريتيش صورة جديدة، غتبقى القديمة.</p>}
+            <input id="imageInput" type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} className={`${inputClass} !py-2`} />
+            {editingId && <p className="text-[11px] text-gray-500 mt-1.5 flex items-center gap-1"><span className="text-yellow-500">ℹ️</span> إلى ما ختاريتيش صورة جديدة، غتبقى القديمة.</p>}
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-bold mb-1">تفاصيل الخبر (الوصف)</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full p-2 border rounded h-32 shadow-sm focus:ring-primary focus:border-primary" placeholder="اكتب تفاصيل الخبر هنا..." required></textarea>
+            <label className="block text-sm font-bold mb-2 text-gray-700">تفاصيل الخبر (الوصف)</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className={`${inputClass} min-h-[120px] resize-y`} placeholder="اكتب تفاصيل الخبر هنا..." required></textarea>
           </div>
         </div>
         
-        <button type="submit" className={`w-full md:w-auto font-bold px-8 py-2.5 rounded-lg text-white transition-all shadow-md ${editingId ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-primary hover:bg-opacity-90'}`}>
+        <button type="submit" className={`w-full md:w-auto font-black px-10 py-3 rounded-lg text-white transition-all shadow-md ${editingId ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-primary hover:bg-opacity-90'}`}>
             {editingId ? 'حفظ التعديلات' : 'نشر الخبر'}
         </button>
       </form>
 
       <div>
-        <h3 className="text-lg font-bold mb-4">الأخبار المنشورة</h3>
-        {loading ? <p className="text-center py-4">جاري التحميل...</p> : (
-          <div className="overflow-x-auto rounded-lg border border-gray-200">
-            <table className="w-full text-right border-collapse bg-white">
-              <thead>
-                <tr className="bg-gray-100 border-b-2 border-gray-300 text-sm">
-                  <th className="p-3">الصورة</th>
-                  <th className="p-3">العنوان</th>
-                  <th className="p-3">النوع</th>
-                  <th className="p-3">التاريخ</th>
-                  <th className="p-3 text-center">إجراءات</th>
-                </tr>
-              </thead>
-              <tbody>
-                {news.map((item) => (
-                  <tr key={item._id} className="border-b hover:bg-gray-50 transition">
-                    <td className="p-3"><img src={item.image} alt={item.title} className="w-12 h-12 object-cover rounded-lg shadow-sm" /></td>
-                    <td className="p-3 font-bold text-gray-800">{item.title}</td>
-                    <td className="p-3"><span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-black uppercase italic">{item.newsType}</span></td>
-                    <td className="p-3 text-xs text-gray-500 font-bold">{new Date(item.date).toLocaleDateString('ar-MA')}</td>
-                    <td className="p-3 text-center space-x-2 space-x-reverse min-w-[150px]">
-                      <button onClick={() => handleEditClick(item)} className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-xs transition-colors">تعديل</button>
-                      <button onClick={() => handleDelete(item._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs transition-colors">مسح</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <h3 className="text-xl font-bold mb-6 text-gray-800 border-b pb-2">الأخبار المنشورة</h3>
+        
+        {loading ? (
+          <div className="text-center py-10">
+            <p className="text-lg font-bold text-primary animate-pulse">جاري التحميل...</p>
           </div>
+        ) : (
+          <>
+            {/* ========================================= */}
+            {/* 💻 العرض الخاص بالشاشات الكبيرة (جدول) */}
+            {/* ========================================= */}
+            <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+              <table className="w-full text-right border-collapse bg-white">
+                <thead>
+                  <tr className="bg-gray-50 border-b-2 border-gray-200 text-sm text-gray-600">
+                    <th className="p-4">الصورة</th>
+                    <th className="p-4 w-2/5">العنوان</th>
+                    <th className="p-4">النوع</th>
+                    <th className="p-4">التاريخ</th>
+                    <th className="p-4 text-center">إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {news.map((item) => (
+                    <tr key={item._id} className="border-b border-gray-100 hover:bg-gray-50 transition">
+                      <td className="p-4">
+                        <img src={item.image} alt={item.title} className="w-16 h-12 object-cover rounded-lg shadow-sm border border-gray-200" />
+                      </td>
+                      <td className="p-4 font-bold text-gray-800 leading-tight">{item.title}</td>
+                      <td className="p-4">
+                        <span className="bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider">
+                          {item.newsType}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm text-gray-500 font-bold">{new Date(item.date).toLocaleDateString('ar-MA')}</td>
+                      <td className="p-4 text-center space-x-2 space-x-reverse min-w-[160px]">
+                        <button onClick={() => handleEditClick(item)} className="bg-yellow-500 text-white px-4 py-1.5 rounded-lg hover:bg-yellow-600 text-xs font-bold transition-colors shadow-sm">تعديل</button>
+                        <button onClick={() => handleDelete(item._id)} className="bg-red-500 text-white px-4 py-1.5 rounded-lg hover:bg-red-600 text-xs font-bold transition-colors shadow-sm">مسح</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* ========================================= */}
+            {/* 📱 العرض الخاص بالهواتف (بطاقات - Cards) */}
+            {/* ========================================= */}
+            <div className="md:hidden flex flex-col gap-4">
+              {news.map((item) => (
+                <div key={item._id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex flex-col gap-4">
+                  <div className="flex gap-4 items-center">
+                    <div className="flex-shrink-0">
+                      <img src={item.image} alt={item.title} className="w-20 h-20 object-cover rounded-xl shadow-sm border border-gray-100" />
+                    </div>
+                    <div className="flex flex-col flex-1">
+                      <span className="bg-secondary/10 text-secondary w-max px-2.5 py-1 rounded-md text-[10px] font-black uppercase mb-1.5 border border-secondary/10">
+                        {item.newsType}
+                      </span>
+                      <h4 className="font-bold text-gray-800 text-sm leading-snug line-clamp-2">{item.title}</h4>
+                      <span className="text-xs text-gray-400 font-bold mt-2 flex items-center gap-1">
+                        📅 {new Date(item.date).toLocaleDateString('ar-MA')}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2 pt-3 border-t border-gray-100">
+                    <button onClick={() => handleEditClick(item)} className="flex-1 bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 text-xs font-bold transition-colors shadow-sm flex justify-center items-center gap-1">
+                      ✏️ تعديل
+                    </button>
+                    <button onClick={() => handleDelete(item._id)} className="flex-1 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 text-xs font-bold transition-colors shadow-sm flex justify-center items-center gap-1">
+                      🗑️ مسح
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
