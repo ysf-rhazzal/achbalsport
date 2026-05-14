@@ -68,7 +68,7 @@ const AdminPlayers = () => {
     formData.append('category', category);
     
     if (image) {
-      formData.append('photo', image); 
+      formData.append('image', image); 
     }
 
     try {
