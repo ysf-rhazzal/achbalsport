@@ -27,7 +27,7 @@ const Players = () => {
 
   // هاد المصفوفة خاصها تكون مطابقة 100% لداكشي اللي مسجل فالبكاند
   // إيلا رديتيهم U10, U11 فالبكاند، خاصك تبدلهم هنا حتى هما
-  const categories = ['U10', 'U11', 'U13', 'U15', 'U17', 'U19', 'Senior'];
+  const categories = ['براعم', 'تحت 10 سنوات', 'تحت 11 سنوات', 'تحت 13 سنوات', 'تحت 15 سنوات',];
 
   return (
     <div className="bg-gray-50 min-h-screen pt-24 pb-20 font-arabic" dir="rtl">
