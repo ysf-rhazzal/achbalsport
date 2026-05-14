@@ -66,8 +66,8 @@ const Register = () => {
     }
   };
 
-  // كلاس موحد لجميع الخانات باش يجيو مقادين 100% فالحجم والبوردر
-  const inputClass = "w-full h-[52px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-gray-800 appearance-none";
+  // زدنا هنا py-3 باش التيكست يجي فالسنتر (الوسط) من الفوق والتحت
+  const inputClass = "w-full h-[52px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-gray-800 appearance-none";
 
   return (
     <div className="max-w-3xl mx-auto py-10 px-4 font-arabic" dir="rtl">
@@ -103,8 +103,8 @@ const Register = () => {
                       name="childBirthDate" 
                       value={formData.childBirthDate}
                       onChange={handleChange} 
-                      /* هنا فرضنا البوردر والطول باش ما يصغارش، و text-transparent باش يغبر التاريخ يلا كان خاوي */
-                      className={`w-full h-[52px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none ${!formData.childBirthDate ? 'text-transparent' : 'text-gray-800'}`} 
+                      /* ضفنا هنا py-3 باش تقاد مع الخانات لاخرين وتجي الوسط */
+                      className={`w-full h-[52px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none ${!formData.childBirthDate ? 'text-transparent' : 'text-gray-800'}`} 
                       required 
                     />
                   </div>
