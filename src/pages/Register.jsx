@@ -6,9 +6,6 @@ const Register = () => {
   const [step, setStep] = useState(1);
   const [fileNumber, setFileNumber] = useState(null); 
   const [loading, setLoading] = useState(false);
-  
-  // هاد الـ state زدناها باش نحلّو مشكل الـ Date فـ الآيفون
-  const [dateFocused, setDateFocused] = useState(false); 
 
   // تخزين المعلومات النصية
   const [formData, setFormData] = useState({
@@ -97,18 +94,21 @@ const Register = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
                   
-                  {/* هنا كاين القالب ديال تاريخ الازدياد للآيفون */}
+                  {/* هنا حلينا المشكل ديال الآيفون بـ JavaScript نيشان */}
                   <input 
-                    type={(dateFocused || formData.childBirthDate) ? "date" : "text"} 
+                    type="text" 
                     name="childBirthDate" 
                     placeholder="تاريخ الازدياد" 
-                    onFocus={() => setDateFocused(true)} 
+                    onFocus={(e) => {
+                      e.target.type = 'date';
+                      if (e.target.showPicker) e.target.showPicker(); 
+                    }} 
                     onBlur={(e) => {
-                      if (!e.target.value) setDateFocused(false);
+                      if (!e.target.value) e.target.type = 'text';
                     }}
                     value={formData.childBirthDate}
                     onChange={handleChange} 
-                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-gray-700" 
+                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-gray-700 bg-white" 
                     required 
                   />
 
