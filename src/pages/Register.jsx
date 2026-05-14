@@ -116,13 +116,11 @@ const Register = () => {
                   
                   <select name="childCategory" value={formData.childCategory} onChange={handleChange} className={inputClass} required>
                     <option value="">اختار الفئة العمرية</option>
-                    <option value="U10">U10</option>
-                    <option value="U11">U11</option>
-                    <option value="U13">U13</option>
-                    <option value="U15">U15</option>
-                    <option value="U17">U17</option>
-                    <option value="U19">U19</option>
-                    <option value="Senior">Senior</option>
+                <option value="براعم">براعم</option>
+                <option value="U10">تحت 10 سنوات</option>
+                <option value="U11">تحت 11 سنوات</option>
+                <option value="U13">تحت 13 سنوات</option>
+                <option value="U15">تحت 15 سنوات</option>
                   </select>
 
                   <input type="text" name="childPosition" value={formData.childPosition} placeholder="المركز المفضل (مثلا: هجوم)" onChange={handleChange} className={inputClass} required />
