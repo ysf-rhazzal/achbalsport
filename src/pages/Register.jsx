@@ -66,6 +66,9 @@ const Register = () => {
     }
   };
 
+  // كلاس موحد لجميع الخانات باش يجيو مقادين 100% فالحجم والبوردر
+  const inputClass = "w-full h-[52px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-gray-800 appearance-none";
+
   return (
     <div className="max-w-3xl mx-auto py-10 px-4 font-arabic" dir="rtl">
       <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
@@ -86,33 +89,32 @@ const Register = () => {
               <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold border-b pb-2 mb-4 text-primary">1. معلومات الطفل</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className={inputClass} required />
                   
-                  {/* ====== الحل النهائي للآيفون ====== */}
-                  <div className="relative w-full">
-                    {/* هادي الكلمة المزورة اللي كتبان بحال Placeholder */}
+                  {/* ====== الحل النهائي الموحد للآيفون ====== */}
+                  <div className="relative w-full h-[52px]">
                     {!formData.childBirthDate && (
-                      <div className="absolute inset-0 right-3 flex items-center text-gray-400 pointer-events-none">
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                         تاريخ الازدياد
-                      </div>
+                      </span>
                     )}
-                    {/* هادا هو الـ Input الحقيقي، ديما date باش الآيفون يحل الأجندة */}
                     <input 
                       type="date" 
                       name="childBirthDate" 
                       value={formData.childBirthDate}
                       onChange={handleChange} 
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white ${!formData.childBirthDate ? 'text-transparent' : 'text-gray-700'}`} 
+                      /* هنا فرضنا البوردر والطول باش ما يصغارش، و text-transparent باش يغبر التاريخ يلا كان خاوي */
+                      className={`w-full h-[52px] px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none ${!formData.childBirthDate ? 'text-transparent' : 'text-gray-800'}`} 
                       required 
                     />
                   </div>
                   {/* ================================== */}
 
-                  <input type="number" name="childAge" value={formData.childAge} placeholder="العمر" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
-                  <input type="text" name="childEducation" value={formData.childEducation} placeholder="المستوى الدراسي" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
-                  <input type="text" name="childCity" value={formData.childCity} placeholder="المدينة" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  <input type="number" name="childAge" value={formData.childAge} placeholder="العمر" onChange={handleChange} className={inputClass} required />
+                  <input type="text" name="childEducation" value={formData.childEducation} placeholder="المستوى الدراسي" onChange={handleChange} className={inputClass} required />
+                  <input type="text" name="childCity" value={formData.childCity} placeholder="المدينة" onChange={handleChange} className={inputClass} required />
                   
-                  <select name="childCategory" value={formData.childCategory} onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required>
+                  <select name="childCategory" value={formData.childCategory} onChange={handleChange} className={inputClass} required>
                     <option value="">اختار الفئة العمرية</option>
                     <option value="U10">U10</option>
                     <option value="U11">U11</option>
@@ -123,7 +125,7 @@ const Register = () => {
                     <option value="Senior">Senior</option>
                   </select>
 
-                  <input type="text" name="childPosition" value={formData.childPosition} placeholder="المركز المفضل (مثلا: هجوم)" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
+                  <input type="text" name="childPosition" value={formData.childPosition} placeholder="المركز المفضل (مثلا: هجوم)" onChange={handleChange} className={inputClass} required />
                 </div>
                 <button type="button" onClick={() => setStep(2)} className="bg-primary hover:bg-secondary text-white font-bold py-3 px-6 rounded-lg mt-6 w-full transition-colors shadow-md">التالي: معلومات ولي الأمر</button>
               </div>
@@ -134,12 +136,12 @@ const Register = () => {
               <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold border-b pb-2 mb-4 text-primary">2. معلومات ولي الأمر والمعلومات الصحية</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" name="parentFullName" value={formData.parentFullName} placeholder="الاسم الكامل لولي الأمر" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
-                  <input type="text" name="parentCin" value={formData.parentCin} placeholder="رقم البطاقة الوطنية" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
-                  <input type="tel" name="parentPhone" value={formData.parentPhone} placeholder="رقم الهاتف" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-right" dir="ltr" required />
-                  <input type="tel" name="parentWhatsapp" value={formData.parentWhatsapp} placeholder="رقم الواتساب" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-right" dir="ltr" required />
-                  <input type="email" name="parentEmail" value={formData.parentEmail} placeholder="البريد الإلكتروني" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 md:col-span-2 text-right" dir="ltr" required />
-                  <textarea name="parentAddress" value={formData.parentAddress} placeholder="العنوان السكني" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 md:col-span-2" required></textarea>
+                  <input type="text" name="parentFullName" value={formData.parentFullName} placeholder="الاسم الكامل لولي الأمر" onChange={handleChange} className={inputClass} required />
+                  <input type="text" name="parentCin" value={formData.parentCin} placeholder="رقم البطاقة الوطنية" onChange={handleChange} className={inputClass} required />
+                  <input type="tel" name="parentPhone" value={formData.parentPhone} placeholder="رقم الهاتف" onChange={handleChange} className={`${inputClass} text-right`} dir="ltr" required />
+                  <input type="tel" name="parentWhatsapp" value={formData.parentWhatsapp} placeholder="رقم الواتساب" onChange={handleChange} className={`${inputClass} text-right`} dir="ltr" required />
+                  <input type="email" name="parentEmail" value={formData.parentEmail} placeholder="البريد الإلكتروني" onChange={handleChange} className={`${inputClass} md:col-span-2 text-right`} dir="ltr" required />
+                  <textarea name="parentAddress" value={formData.parentAddress} placeholder="العنوان السكني" onChange={handleChange} className="w-full min-h-[100px] p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-gray-800 md:col-span-2" required></textarea>
                 </div>
                 <div className="flex justify-between mt-8">
                   <button type="button" onClick={() => setStep(1)} className="bg-gray-200 text-gray-700 font-bold px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors">السابق</button>
@@ -155,19 +157,19 @@ const Register = () => {
                 <div className="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-100">
                   <div>
                     <label className="block text-sm font-bold mb-2 text-gray-700">صورة الطفل <span className="text-red-500">*</span></label>
-                    <input type="file" name="childPhoto" accept="image/*" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" required />
+                    <input type="file" name="childPhoto" accept="image/*" onChange={handleFileChange} className="w-full h-[52px] p-2 border border-gray-300 rounded-lg bg-white" required />
                   </div>
                   <div>
                     <label className="block text-sm font-bold mb-2 text-gray-700">شهادة مدرسية</label>
-                    <input type="file" name="schoolCertificate" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" />
+                    <input type="file" name="schoolCertificate" onChange={handleFileChange} className="w-full h-[52px] p-2 border border-gray-300 rounded-lg bg-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold mb-2 text-gray-700">نسخة بطاقة ولي الأمر</label>
-                    <input type="file" name="parentCinCopy" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" />
+                    <input type="file" name="parentCinCopy" onChange={handleFileChange} className="w-full h-[52px] p-2 border border-gray-300 rounded-lg bg-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-bold mb-2 text-gray-700">شهادة طبية</label>
-                    <input type="file" name="medicalCertificate" onChange={handleFileChange} className="w-full p-2 border rounded-lg bg-white" />
+                    <input type="file" name="medicalCertificate" onChange={handleFileChange} className="w-full h-[52px] p-2 border border-gray-300 rounded-lg bg-white" />
                   </div>
                 </div>
                 <div className="flex justify-between mt-8">
