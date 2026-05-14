@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -66,7 +66,6 @@ const Register = () => {
     }
   };
 
-  // زدنا هنا py-3 باش التيكست يجي فالسنتر (الوسط) من الفوق والتحت
   const inputClass = "w-full h-[52px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white text-gray-800 appearance-none";
 
   return (
@@ -91,7 +90,7 @@ const Register = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className={inputClass} required />
                   
-                  {/* ====== الحل النهائي الموحد للآيفون ====== */}
+                  {/* ====== الحل الموحد لجميع الأجهزة (آيفون، أندرويد، بيسي) ====== */}
                   <div className="relative w-full h-[52px]">
                     {!formData.childBirthDate && (
                       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
@@ -103,8 +102,12 @@ const Register = () => {
                       name="childBirthDate" 
                       value={formData.childBirthDate}
                       onChange={handleChange} 
-                      /* ضفنا هنا py-3 باش تقاد مع الخانات لاخرين وتجي الوسط */
-                      className={`w-full h-[52px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none ${!formData.childBirthDate ? 'text-transparent' : 'text-gray-800'}`} 
+                      /* 💡 زدنا هنا [&::-webkit-calendar-picker-indicator]:opacity-0 باش نخفيو الأيقونة يلا كانت الخانة خاوية */
+                      className={`w-full h-[52px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none transition-all ${
+                        !formData.childBirthDate 
+                          ? 'text-transparent [&::-webkit-calendar-picker-indicator]:opacity-0' 
+                          : 'text-gray-800'
+                      }`} 
                       required 
                     />
                   </div>
@@ -116,11 +119,13 @@ const Register = () => {
                   
                   <select name="childCategory" value={formData.childCategory} onChange={handleChange} className={inputClass} required>
                     <option value="">اختار الفئة العمرية</option>
-                <option value="براعم">براعم</option>
-                <option value="U10">تحت 10 سنوات</option>
-                <option value="U11">تحت 11 سنوات</option>
-                <option value="U13">تحت 13 سنوات</option>
-                <option value="U15">تحت 15 سنوات</option>
+                    <option value="U10">U10</option>
+                    <option value="U11">U11</option>
+                    <option value="U13">U13</option>
+                    <option value="U15">U15</option>
+                    <option value="U17">U17</option>
+                    <option value="U19">U19</option>
+                    <option value="Senior">Senior</option>
                   </select>
 
                   <input type="text" name="childPosition" value={formData.childPosition} placeholder="المركز المفضل (مثلا: هجوم)" onChange={handleChange} className={inputClass} required />
