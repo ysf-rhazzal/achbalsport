@@ -7,29 +7,24 @@ const Register = () => {
   const [fileNumber, setFileNumber] = useState(null); 
   const [loading, setLoading] = useState(false);
 
-  // تخزين المعلومات النصية
   const [formData, setFormData] = useState({
     childFullName: '', childBirthDate: '', childAge: '', childEducation: '', childCity: '', childCategory: '', childPosition: '', childPlayedBefore: 'لا',
     parentFullName: '', parentPhone: '', parentWhatsapp: '', parentEmail: '', parentCin: '', parentAddress: '',
     hasDisease: 'لا', hasAllergies: 'لا', canPlaySport: 'نعم'
   });
 
-  // تخزين الوثائق (الملفات)
   const [files, setFiles] = useState({
     childPhoto: null, schoolCertificate: null, parentCinCopy: null, medicalCertificate: null, parentAuthorization: null
   });
 
-  // دالة تغيير النصوص
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // دالة تغيير الملفات
   const handleFileChange = (e) => {
     setFiles({ ...files, [e.target.name]: e.target.files[0] });
   };
 
-  // إرسال البيانات للسيرفر
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -48,7 +43,6 @@ const Register = () => {
       hasDisease: formData.hasDisease, hasAllergies: formData.hasAllergies, canPlaySport: formData.canPlaySport === 'نعم'
     }));
 
-    // إضافة الوثائق
     for (const key in files) {
       if (files[key]) data.append(key, files[key]);
     }
@@ -94,24 +88,25 @@ const Register = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input type="text" name="childFullName" value={formData.childFullName} placeholder="الاسم الكامل للطفل" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
                   
-                  {/* هنا حلينا المشكل ديال الآيفون بـ JavaScript نيشان */}
-             {/* هادي هي الطريقة المضمونة 100% للآيفون (CSS Hack) */}
-<input 
-  type="text" 
-  name="childBirthDate" 
-  placeholder="تاريخ الازدياد" 
-  onFocus={(e) => e.target.type = 'date'} 
-  onBlur={(e) => {
-    if (!e.target.value) e.target.type = 'text';
-  }}
-  value={formData.childBirthDate}
-  onChange={handleChange} 
-  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 text-gray-700 bg-white" 
-  required 
-/>
-
-
-
+                  {/* ====== الحل النهائي للآيفون ====== */}
+                  <div className="relative w-full">
+                    {/* هادي الكلمة المزورة اللي كتبان بحال Placeholder */}
+                    {!formData.childBirthDate && (
+                      <div className="absolute inset-0 right-3 flex items-center text-gray-400 pointer-events-none">
+                        تاريخ الازدياد
+                      </div>
+                    )}
+                    {/* هادا هو الـ Input الحقيقي، ديما date باش الآيفون يحل الأجندة */}
+                    <input 
+                      type="date" 
+                      name="childBirthDate" 
+                      value={formData.childBirthDate}
+                      onChange={handleChange} 
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white ${!formData.childBirthDate ? 'text-transparent' : 'text-gray-700'}`} 
+                      required 
+                    />
+                  </div>
+                  {/* ================================== */}
 
                   <input type="number" name="childAge" value={formData.childAge} placeholder="العمر" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
                   <input type="text" name="childEducation" value={formData.childEducation} placeholder="المستوى الدراسي" onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required />
