@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
 
 const AdminPlayers = () => {
   const [players, setPlayers] = useState([]);
@@ -13,9 +13,10 @@ const AdminPlayers = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [position, setPosition] = useState('');
-  const [category, setCategory] = useState('U10'); // القيمة الافتراضية الجديدة
+  // القيمة الافتراضية رجعات براعم كيفما بغيتي
+  const [category, setCategory] = useState('براعم'); 
   const [image, setImage] = useState(null);
-  const [existingImage, setExistingImage] = useState(''); // التصويرة القديمة
+  const [existingImage, setExistingImage] = useState(''); 
 
   const fetchPlayers = async () => {
     try {
@@ -49,7 +50,7 @@ const AdminPlayers = () => {
     setName('');
     setNumber('');
     setPosition('');
-    setCategory('U10');
+    setCategory('براعم');
     setImage(null);
     setExistingImage('');
     if (document.getElementById('playerImageInput')) {
@@ -68,13 +69,21 @@ const AdminPlayers = () => {
     formData.append('category', category);
     
     if (image) {
-      formData.append('image', image); 
+      // 💡 هنا كاين السحر اللي غيحل المشكل:
+      // 👇 هادي هي الضربة القاضية: دييييما غنصيفطوها بسمية photo
+        if (image) {
+        formData.append('photo', image); 
+        } else {
+        // فـ الإضافة، الباكاند كيتسنى 'photo'
+        formData.append('photo', image); 
+      }
     }
 
     try {
       if (editingId) {
         await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/players/${editingId}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+          // حيدنا Content-Type باش axios يدير خدمتو بوحدو
+          headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
           title: 'تم التعديل!',
@@ -84,7 +93,8 @@ const AdminPlayers = () => {
         });
       } else {
         await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/players', formData, {
-          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+          // حيدنا Content-Type باش axios يدير خدمتو بوحدو
+          headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
           title: 'رائع!',
@@ -162,13 +172,12 @@ const AdminPlayers = () => {
           <div>
             <label className="block text-sm font-bold mb-1 text-gray-700">الفئة</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full p-2 border rounded font-bold outline-none cursor-pointer" required>
-                <option value="U10">U10</option>
-                <option value="U11">U11</option>
-                <option value="U13">U13</option>
-                <option value="U15">U15</option>
-                <option value="U17">U17</option>
-                <option value="U19">U19</option>
-                <option value="Senior">Senior</option>
+              {/* خليت الخيارات كيفما طلبتي */}
+              <option value="براعم">براعم</option>
+              <option value="تحت 10 سنوات">تحت 10 سنوات</option>
+              <option value="تحت 11 سنوات">تحت 11 سنوات</option>
+              <option value="تحت 13 سنوات">تحت 13 سنوات</option>
+              <option value="تحت 15 سنوات">تحت 15 سنوات</option>
             </select>
           </div>
 
