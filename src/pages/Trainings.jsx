@@ -25,8 +25,8 @@ const Trainings = () => {
     </div>
   );
 
-  // الفئات الجديدة (تأكد أنها نفس اللي في الداشبورد)
-  const categories = ['U10', 'U11', 'U13', 'U15', 'U17', 'U19', 'Senior'];
+  // 💡 القالب كان هنا: الفئات خاصهم يكونو بحال لي فـ الداشبورد (AdminTrainings)
+  const categories = ['براعم', 'تحت 10 سنوات', 'تحت 11 سنوات', 'تحت 13 سنوات', 'تحت 15 سنوات'];
 
   return (
     <div className="bg-[#f8fafc] min-h-screen pt-24 pb-20 font-arabic" dir="rtl">
@@ -44,9 +44,9 @@ const Trainings = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
           {categories.map((cat) => {
-            // فلتر حسب الفئة الجديدة
+            // فلتر حسب الفئة
             const catTrainings = trainings.filter(t => t.ageCategory === cat);
-            if (catTrainings.length === 0) return null;
+            if (catTrainings.length === 0) return null; // يلا كانت الفئة مافيها تاشي تدريب ماغاديش تبان الكارد
 
             return (
               <div key={cat} className="bg-white rounded-[2rem] shadow-[0_15px_40px_rgba(0,0,0,0.04)] overflow-hidden border border-gray-100 flex flex-col">
@@ -76,7 +76,7 @@ const Trainings = () => {
                       </div>
 
                       <div className="text-left flex flex-col items-end">
-                        <div className="bg-[#1a2e44] text-white px-4 py-2 rounded-xl font-black text-lg md:text-xl shadow-lg mb-2 tracking-tighter">
+                        <div className="bg-[#1a2e44] text-white px-4 py-2 rounded-xl font-black text-lg md:text-xl shadow-lg mb-2 tracking-tighter" dir="ltr">
                           {t.time}
                         </div>
                         <p className="bg-secondary/10 text-secondary px-3 py-0.5 rounded-full text-[10px] font-black uppercase italic">
@@ -87,7 +87,7 @@ const Trainings = () => {
                   ))}
                 </div>
 
-                {/* ملاحظات الفئة */}
+                {/* ملاحظات الفئة (كيبين الملاحظة ديال أول تدريب فالفئة) */}
                 {catTrainings[0].notes && (
                    <div className="px-6 py-4 bg-secondary/5 border-t border-secondary/10">
                       <p className="text-xs text-secondary font-bold flex items-center gap-2">
