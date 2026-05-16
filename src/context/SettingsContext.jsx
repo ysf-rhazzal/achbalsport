@@ -26,7 +26,7 @@ export const SettingsProvider = ({ children }) => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/settings');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/settings');
         if (response.data) {
           setSettings(response.data);
           
