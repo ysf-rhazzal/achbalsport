@@ -1,133 +1,232 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AdminRegistrations from './AdminRegistrations';
-import AdminNews from './AdminNews';
-import AdminPlayers from './AdminPlayers';
-import AdminMatches from './AdminMatches';
-import AdminTrainings from './AdminTrainings';
-import AdminSettings from './AdminSettings';
-import AdminStore from './AdminStore';
-import AdminGallery from './AdminGallery'; // 👈 هانا جبنا صفحة المعرض الجديدة
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
-const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('registrations');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const navigate = useNavigate();
+const AdminGallery = () => {
+  const [mediaList, setMediaList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    title: '',
+    category: 'مباراة', 
+  });
+  const [files, setFiles] = useState([]); 
+
+  const fetchGallery = async () => {
+    try {
+      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/gallery');
+      setMediaList(response.data);
+    } catch (error) {
+      console.error('Error fetching gallery:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
+    fetchGallery();
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    setFiles(e.target.files); 
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!files || files.length === 0) {
+      return Swal.fire('خطأ', 'المرجو اختيار صور أو فيديوهات أولاً', 'error');
+    }
+
+    setUploading(true);
     const token = localStorage.getItem('adminToken');
-    if (!token) {
-      navigate('/admin');
+    
+    const data = new FormData();
+    data.append('title', formData.title);
+    data.append('category', formData.category);
+    
+    for (let i = 0; i < files.length; i++) {
+      data.append('media', files[i]);
     }
-  }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    navigate('/admin');
-  };
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setIsSidebarOpen(false);
-  };
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'registrations': return <AdminRegistrations />;
-      case 'news': return <AdminNews />;
-      case 'players': return <AdminPlayers />;
-      case 'matches': return <AdminMatches />;
-      case 'trainings': return <AdminTrainings />;
-      case 'settings': return <AdminSettings />;
-      case 'store': return <AdminStore />;
-      case 'gallery': return <AdminGallery />; // 👈 زدناها هنا باش تخدم ملي نكليكيو عليها
-      default: return <AdminRegistrations />;
+    try {
+      await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/gallery', data, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      Swal.fire('تم بنجاح!', `تم رفع ${files.length} ملفات بنجاح.`, 'success');
+      setFormData({ title: '', category: 'مباراة' });
+      setFiles([]);
+      document.getElementById('fileInput').value = ''; 
+      fetchGallery();
+    } catch (error) {
+      Swal.fire('خطأ!', 'حدث مشكل أثناء الرفع.', 'error');
+    } finally {
+      setUploading(false);
     }
   };
+
+  // 👈 دالة التعديل (Update) اللي طلباتي
+  const handleEdit = (item) => {
+    Swal.fire({
+      title: 'تعديل بيانات الملف',
+      html: `
+        <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;" dir="rtl">
+          <label style="font-weight: bold; font-size: 14px;">العنوان:</label>
+          <input id="edit-title" class="swal2-input" style="margin: 0;" value="${item.title}" placeholder="العنوان">
+          
+          <label style="font-weight: bold; font-size: 14px; mt-2">الفئة:</label>
+          <select id="edit-category" class="swal2-input" style="margin: 0;">
+            <option value="مباراة" ${item.category === 'مباراة' ? 'selected' : ''}>مباراة</option>
+            <option value="تدريب" ${item.category === 'تدريب' ? 'selected' : ''}>تدريب</option>
+            <option value="حدث" ${item.category === 'حدث' ? 'selected' : ''}>حدث / نشاط</option>
+          </select>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'حفظ التعديلات',
+      cancelButtonText: 'إلغاء',
+      confirmButtonColor: '#1a2e44',
+      preConfirm: () => {
+        return {
+          title: document.getElementById('edit-title').value,
+          category: document.getElementById('edit-category').value
+        }
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const token = localStorage.getItem('adminToken');
+          await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${item._id}`, result.value, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          Swal.fire('تم التحديث!', 'تم حفظ التعديلات بنجاح.', 'success');
+          fetchGallery(); // تحديث القائمة
+        } catch (error) {
+          Swal.fire('خطأ!', 'لم يتم التحديث.', 'error');
+        }
+      }
+    });
+  };
+
+  // دالة الحذف (يلا زلقات ليه شي تصويرة)
+  const handleDelete = async (id) => {
+    Swal.fire({
+      title: 'هل أنت متأكد؟',
+      text: "سيتم حذف هذا الملف نهائياً!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e85d04',
+      cancelButtonColor: '#1a2e44',
+      confirmButtonText: 'نعم، احذف!',
+      cancelButtonText: 'إلغاء'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const token = localStorage.getItem('adminToken');
+          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          Swal.fire('تم الحذف!', 'تم حذف الملف بنجاح.', 'success');
+          setMediaList(mediaList.filter(item => item._id !== id));
+        } catch (error) {
+          Swal.fire('خطأ!', 'لم يتم الحذف.', 'error');
+        }
+      }
+    });
+  };
+
+  const inputClass = "w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary/50 bg-white";
+
+  if (loading) return <div className="text-center py-20 font-bold text-primary animate-pulse">جاري التحميل...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex font-arabic" dir="rtl">
-      
-      {/* 📱 بوطونة الموني ديال التليفون */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-primary text-white flex items-center justify-between px-4 z-20 shadow-md">
-        <h2 className="text-xl font-bold">إدارة أشبال</h2>
-        <button onClick={() => setIsSidebarOpen(true)} className="p-2 hover:bg-white/10 rounded-lg transition">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
+    <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg font-arabic">
+      <h2 className="text-2xl font-black mb-6 text-primary border-b pb-3 flex items-center gap-2">
+        <span>📸</span> إدارة المعرض (تعديل ورفع متعدد)
+      </h2>
 
-      {/* ⬛ الضل (Overlay) ملي كيكون الموني محلول فالتليفون */}
-      {isSidebarOpen && (
-        <div 
-          className="md:hidden fixed inset-0 bg-black/50 z-30 transition-opacity"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-
-      {/* 📚 القائمة الجانبية (Sidebar) */}
-      <aside className={`
-        fixed inset-y-0 right-0 z-40 w-64 bg-primary text-white flex flex-col shadow-2xl transition-transform duration-300 ease-in-out
-        md:static md:translate-x-0
-        ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
-      `}>
-        <div className="p-6 flex items-center justify-between border-b border-white/10 mt-2 md:mt-0">
-          <h2 className="text-2xl font-bold tracking-wide">إدارة أشبال</h2>
-          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 hover:bg-white/10 rounded-lg">
-             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        
-        <nav className="flex-grow p-4 space-y-1 overflow-y-auto custom-scrollbar">
-          <button onClick={() => handleTabChange('registrations')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'registrations' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">📋</span> طلبات التسجيل
-          </button>
-          <button onClick={() => handleTabChange('news')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'news' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">📰</span> إدارة الأخبار
-          </button>
-          <button onClick={() => handleTabChange('players')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'players' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">⚽</span> إدارة اللاعبين
-          </button>
-          <button onClick={() => handleTabChange('matches')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'matches' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">🏟️</span> إدارة المباريات
-          </button>
-          <button onClick={() => handleTabChange('trainings')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'trainings' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">⏱️</span> إدارة التداريب
-          </button>
+      <form onSubmit={handleSubmit} className="bg-gray-50 p-5 rounded-xl border border-gray-200 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           
-          {/* 👈 هادي البوطونة الجديدة ديال المعرض */}
-          <button onClick={() => handleTabChange('gallery')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'gallery' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">📸</span> إدارة المعرض
-          </button>
+          <div>
+            <label className="block text-sm font-bold mb-2 text-gray-700">العنوان أو الوصف للكل</label>
+            <input type="text" name="title" value={formData.title} onChange={handleChange} className={inputClass} placeholder="مثال: صور مباراة أشبال ضد..." required />
+          </div>
 
-          <button onClick={() => handleTabChange('store')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'store' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">🛒</span> إدارة المتجر
-          </button>
-          <button onClick={() => handleTabChange('settings')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'settings' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
-            <span className="text-xl">⚙️</span> الإعدادات العامة
-          </button>
-        </nav>
+          <div>
+            <label className="block text-sm font-bold mb-2 text-gray-700">الفئة</label>
+            <select name="category" value={formData.category} onChange={handleChange} className={inputClass}>
+              <option value="مباراة">مباراة</option>
+              <option value="تدريب">تدريب</option>
+              <option value="حدث">حدث / نشاط</option>
+            </select>
+          </div>
 
-        <div className="p-4 border-t border-white/10">
-          <button onClick={handleLogout} className="w-full bg-red-500/20 text-red-100 hover:bg-red-500 hover:text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
-            تسجيل الخروج
-          </button>
+          <div className="md:col-span-2 mt-2 border-2 border-dashed border-secondary/30 p-4 rounded-xl bg-white text-center hover:bg-secondary/5 transition">
+            <label className="block text-sm font-black mb-2 text-primary cursor-pointer">
+              👇 كليكي هنا باش تعزل بزاف ديال التصاور والفيديوهات فدقة وحدة
+            </label>
+            <input id="fileInput" type="file" multiple accept="image/*,video/*" onChange={handleFileChange} className="w-full cursor-pointer text-gray-500 font-bold" required />
+            {files.length > 0 && (
+              <p className="mt-2 text-secondary font-bold text-sm">تم اختيار {files.length} ملفات 📁</p>
+            )}
+          </div>
         </div>
-      </aside>
 
-      {/* 📄 المحتوى الرئيسي */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <div className="h-16 md:hidden flex-shrink-0"></div> 
-        <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-50/50">
-            {renderContent()}
-        </div>
-      </main>
+        <button type="submit" disabled={uploading} className={`w-full font-black py-3 rounded-lg text-white transition-all ${uploading ? 'bg-gray-400' : 'bg-primary hover:bg-secondary hover:shadow-lg'}`}>
+          {uploading ? `جاري رفع ${files.length} ملفات... (المرجو الانتظار)` : '🚀 رفع جميع الملفات للمعرض'}
+        </button>
+      </form>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {mediaList.map((item) => (
+          <div key={item._id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 group relative flex flex-col">
+            <div className="h-48 bg-black relative flex items-center justify-center">
+              {item.type === 'video' ? (
+                <>
+                  <video src={item.mediaUrl} className="w-full h-full object-cover opacity-80" />
+                  <span className="absolute text-white text-3xl opacity-70">▶️</span>
+                </>
+              ) : (
+                <img src={item.mediaUrl} alt={item.title} className="w-full h-full object-cover" />
+              )}
+              <div className="absolute top-2 right-2 bg-secondary text-white text-xs font-black px-2 py-1 rounded shadow">
+                {item.category}
+              </div>
+            </div>
+            
+            <div className="p-4 flex-1 flex flex-col">
+              <h3 className="font-bold text-gray-800 text-sm mb-3 truncate" title={item.title}>{item.title}</h3>
+              <div className="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
+                <span className="text-xs text-gray-400 font-bold">{new Date(item.createdAt).toLocaleDateString('ar-MA')}</span>
+                <div className="flex gap-2">
+                  {/* 👈 بوطونة التعديل */}
+                  <button onClick={() => handleEdit(item)} className="bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white p-1.5 rounded transition-colors text-xs font-bold" title="تعديل">
+                    ✏️
+                  </button>
+                  {/* 👈 بوطونة الحذف */}
+                  <button onClick={() => handleDelete(item._id)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded transition-colors text-xs font-bold" title="حذف">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+        {mediaList.length === 0 && (
+          <div className="col-span-full text-center text-gray-400 font-bold py-10">لا يوجد أي وسائط في المعرض حالياً.</div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default AdminGallery;
