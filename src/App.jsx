@@ -12,6 +12,7 @@ import Matches from './pages/Matches';
 import Trainings from './pages/Trainings';
 import Footer from './components/Footer';
 import Store from './pages/Store';
+import AdminGallery from './pages/admin/AdminGallery';
 import { SettingsProvider } from './context/SettingsContext';
 // صاوبنا هاد المكون باش نقدرو نخدمو بـ useLocation
 const AppContent = () => {
@@ -36,6 +37,7 @@ const AppContent = () => {
           <Route path="/matches" element={<Matches />} />
           <Route path="/trainings" element={<Trainings />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/admin/gallery" element={<AdminGallery />} />
           
           {/* روابط الأدمن */}
           <Route path="/admin" element={<Login />} />
