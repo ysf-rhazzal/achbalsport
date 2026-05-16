@@ -152,10 +152,7 @@ const AdminTrainings = () => {
             <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} className={inputClass} required />
           </div>
 
-          <div>
-            <label className="block text-sm font-bold mb-2 text-gray-700">التاريخ</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputClass} required />
-          </div>
+     
 
                    <div>
             <label className="block text-sm font-bold mb-2 text-gray-700">التاريخ</label>
