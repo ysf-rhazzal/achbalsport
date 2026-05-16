@@ -3,20 +3,20 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const AdminGallery = () => {
-  const [mediaList, setMediaList] = useState([]);
+  const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    title: '',
-    category: 'مباراة', 
-  });
+  const [formData, setFormData] = useState({ title: '', category: 'مباراة' });
   const [files, setFiles] = useState([]); 
+  
+  // نافذة التعديل
+  const [editModal, setEditModal] = useState(null);
 
   const fetchGallery = async () => {
     try {
       const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/gallery');
-      setMediaList(response.data);
+      setAlbums(response.data);
     } catch (error) {
       console.error('Error fetching gallery:', error);
     } finally {
@@ -28,23 +28,12 @@ const AdminGallery = () => {
     fetchGallery();
   }, []);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e) => {
-    setFiles(e.target.files); 
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!files || files.length === 0) {
-      return Swal.fire('خطأ', 'المرجو اختيار صور أو فيديوهات أولاً', 'error');
-    }
+    if (!files || files.length === 0) return Swal.fire('خطأ', 'المرجو اختيار صور أو فيديوهات', 'error');
 
     setUploading(true);
     const token = localStorage.getItem('adminToken');
-    
     const data = new FormData();
     data.append('title', formData.title);
     data.append('category', formData.category);
@@ -55,13 +44,9 @@ const AdminGallery = () => {
 
     try {
       await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/gallery', data, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
-      
-      Swal.fire('تم بنجاح!', `تم رفع ${files.length} ملفات بنجاح.`, 'success');
+      Swal.fire('تم!', 'تم إنشاء الألبوم بنجاح.', 'success');
       setFormData({ title: '', category: 'مباراة' });
       setFiles([]);
       document.getElementById('fileInput').value = ''; 
@@ -73,158 +58,153 @@ const AdminGallery = () => {
     }
   };
 
-  // 👈 دالة التعديل (Update) اللي طلباتي
-  const handleEdit = (item) => {
+  // حذف الألبوم كامل
+  const handleDeleteAlbum = async (id) => {
     Swal.fire({
-      title: 'تعديل بيانات الملف',
-      html: `
-        <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;" dir="rtl">
-          <label style="font-weight: bold; font-size: 14px;">العنوان:</label>
-          <input id="edit-title" class="swal2-input" style="margin: 0;" value="${item.title}" placeholder="العنوان">
-          
-          <label style="font-weight: bold; font-size: 14px; mt-2">الفئة:</label>
-          <select id="edit-category" class="swal2-input" style="margin: 0;">
-            <option value="مباراة" ${item.category === 'مباراة' ? 'selected' : ''}>مباراة</option>
-            <option value="تدريب" ${item.category === 'تدريب' ? 'selected' : ''}>تدريب</option>
-            <option value="حدث" ${item.category === 'حدث' ? 'selected' : ''}>حدث / نشاط</option>
-          </select>
-        </div>
-      `,
+      title: 'حذف الألبوم؟',
+      text: "سيتم حذف الألبوم بجميع صوره وفيديوهاته!",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'حفظ التعديلات',
-      cancelButtonText: 'إلغاء',
-      confirmButtonColor: '#1a2e44',
-      preConfirm: () => {
-        return {
-          title: document.getElementById('edit-title').value,
-          category: document.getElementById('edit-category').value
-        }
-      }
+      confirmButtonText: 'نعم، احذف',
+      cancelButtonText: 'إلغاء'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        try {
-          const token = localStorage.getItem('adminToken');
-          await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${item._id}`, result.value, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          Swal.fire('تم التحديث!', 'تم حفظ التعديلات بنجاح.', 'success');
-          fetchGallery(); // تحديث القائمة
-        } catch (error) {
-          Swal.fire('خطأ!', 'لم يتم التحديث.', 'error');
-        }
+        const token = localStorage.getItem('adminToken');
+        await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setAlbums(albums.filter(album => album._id !== id));
+        Swal.fire('تم الحذف!', '', 'success');
       }
     });
   };
 
-  // دالة الحذف (يلا زلقات ليه شي تصويرة)
-  const handleDelete = async (id) => {
-    Swal.fire({
-      title: 'هل أنت متأكد؟',
-      text: "سيتم حذف هذا الملف نهائياً!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#e85d04',
-      cancelButtonColor: '#1a2e44',
-      confirmButtonText: 'نعم، احذف!',
-      cancelButtonText: 'إلغاء'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const token = localStorage.getItem('adminToken');
-          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          Swal.fire('تم الحذف!', 'تم حذف الملف بنجاح.', 'success');
-          setMediaList(mediaList.filter(item => item._id !== id));
-        } catch (error) {
-          Swal.fire('خطأ!', 'لم يتم الحذف.', 'error');
-        }
-      }
-    });
+  // حفظ تعديلات الألبوم (إزالة صور أو تغيير العنوان)
+  const saveAlbumEdits = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${editModal._id}`, 
+        { title: editModal.title, category: editModal.category, media: editModal.media }, 
+        { headers: { Authorization: `Bearer ${token}` }}
+      );
+      Swal.fire('تم الحفظ!', 'تم تحديث الألبوم.', 'success');
+      setEditModal(null);
+      fetchGallery();
+    } catch (error) {
+      Swal.fire('خطأ!', 'لم يتم الحفظ.', 'error');
+    }
   };
 
   const inputClass = "w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary/50 bg-white";
 
-  if (loading) return <div className="text-center py-20 font-bold text-primary animate-pulse">جاري التحميل...</div>;
+  if (loading) return <div className="text-center py-20 font-bold text-primary">جاري التحميل...</div>;
 
   return (
-    <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg font-arabic">
-      <h2 className="text-2xl font-black mb-6 text-primary border-b pb-3 flex items-center gap-2">
-        <span>📸</span> إدارة المعرض (تعديل ورفع متعدد)
-      </h2>
+    <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg font-arabic relative">
+      <h2 className="text-2xl font-black mb-6 text-primary border-b pb-3">📸 إدارة المعرض (نظام الألبومات)</h2>
 
+      {/* 🟢 إضافة ألبوم جديد */}
       <form onSubmit={handleSubmit} className="bg-gray-50 p-5 rounded-xl border border-gray-200 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          
           <div>
-            <label className="block text-sm font-bold mb-2 text-gray-700">العنوان أو الوصف للكل</label>
-            <input type="text" name="title" value={formData.title} onChange={handleChange} className={inputClass} placeholder="مثال: صور مباراة أشبال ضد..." required />
+            <label className="block text-sm font-bold mb-2">عنوان الألبوم</label>
+            <input type="text" name="title" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className={inputClass} placeholder="مثال: صور مباراة أشبال..." required />
           </div>
-
           <div>
-            <label className="block text-sm font-bold mb-2 text-gray-700">الفئة</label>
-            <select name="category" value={formData.category} onChange={handleChange} className={inputClass}>
+            <label className="block text-sm font-bold mb-2">الفئة</label>
+            <select name="category" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className={inputClass}>
               <option value="مباراة">مباراة</option>
               <option value="تدريب">تدريب</option>
               <option value="حدث">حدث / نشاط</option>
             </select>
           </div>
-
-          <div className="md:col-span-2 mt-2 border-2 border-dashed border-secondary/30 p-4 rounded-xl bg-white text-center hover:bg-secondary/5 transition">
-            <label className="block text-sm font-black mb-2 text-primary cursor-pointer">
-              👇 كليكي هنا باش تعزل بزاف ديال التصاور والفيديوهات فدقة وحدة
-            </label>
-            <input id="fileInput" type="file" multiple accept="image/*,video/*" onChange={handleFileChange} className="w-full cursor-pointer text-gray-500 font-bold" required />
-            {files.length > 0 && (
-              <p className="mt-2 text-secondary font-bold text-sm">تم اختيار {files.length} ملفات 📁</p>
-            )}
+          <div className="md:col-span-2 mt-2 border-2 border-dashed border-secondary/30 p-4 rounded-xl bg-white text-center">
+            <label className="block text-sm font-black mb-2 text-primary cursor-pointer">👇 حدد صور/فيديوهات الألبوم</label>
+            <input id="fileInput" type="file" multiple accept="image/*,video/*" onChange={e => setFiles(e.target.files)} className="w-full" required />
           </div>
         </div>
-
-        <button type="submit" disabled={uploading} className={`w-full font-black py-3 rounded-lg text-white transition-all ${uploading ? 'bg-gray-400' : 'bg-primary hover:bg-secondary hover:shadow-lg'}`}>
-          {uploading ? `جاري رفع ${files.length} ملفات... (المرجو الانتظار)` : '🚀 رفع جميع الملفات للمعرض'}
+        <button type="submit" disabled={uploading} className="w-full font-black py-3 rounded-lg text-white bg-primary hover:bg-secondary transition-all">
+          {uploading ? 'جاري إنشاء الألبوم...' : '🚀 إنشاء الألبوم'}
         </button>
       </form>
 
+      {/* 🟢 عرض الألبومات */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {mediaList.map((item) => (
-          <div key={item._id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 group relative flex flex-col">
-            <div className="h-48 bg-black relative flex items-center justify-center">
-              {item.type === 'video' ? (
-                <>
-                  <video src={item.mediaUrl} className="w-full h-full object-cover opacity-80" />
-                  <span className="absolute text-white text-3xl opacity-70">▶️</span>
-                </>
+        {albums.map((album) => (
+          <div key={album._id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col">
+            <div className="h-48 bg-black relative">
+              {album.coverImage?.includes('video') || album.media[0]?.type === 'video' ? (
+                <video src={album.coverImage || album.media[0]?.url} className="w-full h-full object-cover opacity-80" />
               ) : (
-                <img src={item.mediaUrl} alt={item.title} className="w-full h-full object-cover" />
+                <img src={album.coverImage || album.media[0]?.url} className="w-full h-full object-cover" />
               )}
-              <div className="absolute top-2 right-2 bg-secondary text-white text-xs font-black px-2 py-1 rounded shadow">
-                {item.category}
-              </div>
+              <div className="absolute top-2 right-2 bg-secondary text-white text-xs font-black px-2 py-1 rounded shadow">{album.category}</div>
+              <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded">📁 {album.media.length} ملفات</div>
             </div>
-            
-            <div className="p-4 flex-1 flex flex-col">
-              <h3 className="font-bold text-gray-800 text-sm mb-3 truncate" title={item.title}>{item.title}</h3>
+            <div className="p-4 flex flex-col flex-1">
+              <h3 className="font-bold text-gray-800 text-sm mb-3">{album.title}</h3>
               <div className="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
-                <span className="text-xs text-gray-400 font-bold">{new Date(item.createdAt).toLocaleDateString('ar-MA')}</span>
+                <span className="text-xs text-gray-400 font-bold">{new Date(album.createdAt).toLocaleDateString('ar-MA')}</span>
                 <div className="flex gap-2">
-                  {/* 👈 بوطونة التعديل */}
-                  <button onClick={() => handleEdit(item)} className="bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white p-1.5 rounded transition-colors text-xs font-bold" title="تعديل">
-                    ✏️
-                  </button>
-                  {/* 👈 بوطونة الحذف */}
-                  <button onClick={() => handleDelete(item._id)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded transition-colors text-xs font-bold" title="حذف">
-                    🗑️
-                  </button>
+                  <button onClick={() => setEditModal(album)} className="bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white p-1.5 rounded transition-colors text-xs font-bold">✏️ تعديل</button>
+                  <button onClick={() => handleDeleteAlbum(album._id)} className="bg-red-50 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded transition-colors text-xs font-bold">🗑️ حذف</button>
                 </div>
               </div>
             </div>
           </div>
         ))}
-        {mediaList.length === 0 && (
-          <div className="col-span-full text-center text-gray-400 font-bold py-10">لا يوجد أي وسائط في المعرض حالياً.</div>
-        )}
       </div>
+
+      {/* 🟢 نافذة التعديل (Edit Modal) - باش يمسح شي تصويرة */}
+      {editModal && (
+        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div className="p-4 border-b flex justify-between items-center bg-gray-50">
+              <h3 className="font-black text-xl">تعديل الألبوم</h3>
+              <button onClick={() => setEditModal(null)} className="text-gray-500 hover:text-red-500 text-2xl font-bold">&times;</button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <input type="text" value={editModal.title} onChange={e => setEditModal({...editModal, title: e.target.value})} className={inputClass} />
+                <select value={editModal.category} onChange={e => setEditModal({...editModal, category: e.target.value})} className={inputClass}>
+                  <option value="مباراة">مباراة</option>
+                  <option value="تدريب">تدريب</option>
+                  <option value="حدث">حدث / نشاط</option>
+                </select>
+              </div>
+
+              <h4 className="font-bold mb-3">محتويات الألبوم (انقر على ❌ لحذف صورة):</h4>
+              <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
+                {editModal.media.map((item, index) => (
+                  <div key={index} className="relative h-24 bg-gray-200 rounded-lg overflow-hidden group">
+                    {item.type === 'video' ? (
+                      <video src={item.url} className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={item.url} className="w-full h-full object-cover" />
+                    )}
+                    {/* بوطونة باش يمسح هاد التصويرة من الألبوم */}
+                    <button 
+                      onClick={() => {
+                        const newMedia = editModal.media.filter((_, i) => i !== index);
+                        setEditModal({...editModal, media: newMedia});
+                      }}
+                      className="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-md hover:bg-red-700 transition"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
+              <button onClick={() => setEditModal(null)} className="px-6 py-2 bg-gray-300 rounded-lg font-bold hover:bg-gray-400">إلغاء</button>
+              <button onClick={saveAlbumEdits} className="px-6 py-2 bg-primary text-white rounded-lg font-bold hover:bg-secondary">حفظ التعديلات</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
