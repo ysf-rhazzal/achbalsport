@@ -12,6 +12,7 @@ const AdminGallery = () => {
   
   // نافذة التعديل
   const [editModal, setEditModal] = useState(null);
+  const [newFilesToAppend, setNewFilesToAppend] = useState([]); // 👈 هادي باش نشدو الملفات الجداد اللي غيتزادو فالتعديل
 
   const fetchGallery = async () => {
     try {
@@ -58,7 +59,6 @@ const AdminGallery = () => {
     }
   };
 
-  // حذف الألبوم كامل
   const handleDeleteAlbum = async (id) => {
     Swal.fire({
       title: 'حذف الألبوم؟',
@@ -79,19 +79,37 @@ const AdminGallery = () => {
     });
   };
 
-  // حفظ تعديلات الألبوم (إزالة صور أو تغيير العنوان)
+  // 👈 دالة التعديل تبدلات باش تصيفط الملفات الجداد
   const saveAlbumEdits = async () => {
     try {
+      setUploading(true);
       const token = localStorage.getItem('adminToken');
-      await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${editModal._id}`, 
-        { title: editModal.title, category: editModal.category, media: editModal.media }, 
-        { headers: { Authorization: `Bearer ${token}` }}
-      );
-      Swal.fire('تم الحفظ!', 'تم تحديث الألبوم.', 'success');
+      const data = new FormData();
+      
+      data.append('title', editModal.title);
+      data.append('category', editModal.category);
+      // كنصيفطو التصاور القدام على شكل JSON string
+      data.append('media', JSON.stringify(editModal.media));
+
+      // يلا عزل شي تصاور جداد، كنزيدوهم فـ FormData
+      if (newFilesToAppend && newFilesToAppend.length > 0) {
+        for (let i = 0; i < newFilesToAppend.length; i++) {
+          data.append('newMedia', newFilesToAppend[i]);
+        }
+      }
+
+      await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${editModal._id}`, data, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+
+      Swal.fire('تم الحفظ!', 'تم تحديث الألبوم بنجاح.', 'success');
       setEditModal(null);
+      setNewFilesToAppend([]); // كنخويو الستيت
       fetchGallery();
     } catch (error) {
       Swal.fire('خطأ!', 'لم يتم الحفظ.', 'error');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -103,7 +121,7 @@ const AdminGallery = () => {
     <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg font-arabic relative">
       <h2 className="text-2xl font-black mb-6 text-primary border-b pb-3">📸 إدارة المعرض (نظام الألبومات)</h2>
 
-      {/* 🟢 إضافة ألبوم جديد */}
+      {/* الفورم ديال إنشاء ألبوم جديد بقى هو هو */}
       <form onSubmit={handleSubmit} className="bg-gray-50 p-5 rounded-xl border border-gray-200 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
@@ -124,11 +142,11 @@ const AdminGallery = () => {
           </div>
         </div>
         <button type="submit" disabled={uploading} className="w-full font-black py-3 rounded-lg text-white bg-primary hover:bg-secondary transition-all">
-          {uploading ? 'جاري إنشاء الألبوم...' : '🚀 إنشاء الألبوم'}
+          {uploading && files.length > 0 ? 'جاري إنشاء الألبوم...' : '🚀 إنشاء الألبوم'}
         </button>
       </form>
 
-      {/* 🟢 عرض الألبومات */}
+      {/* عرض الألبومات بقى هو هو */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {albums.map((album) => (
           <div key={album._id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col">
@@ -155,16 +173,16 @@ const AdminGallery = () => {
         ))}
       </div>
 
-      {/* 🟢 نافذة التعديل (Edit Modal) - باش يمسح شي تصويرة */}
+      {/* 🟢 نافذة التعديل (Edit Modal) - زدنا فيها اختيار ملفات جديدة */}
       {editModal && (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
             <div className="p-4 border-b flex justify-between items-center bg-gray-50">
               <h3 className="font-black text-xl">تعديل الألبوم</h3>
-              <button onClick={() => setEditModal(null)} className="text-gray-500 hover:text-red-500 text-2xl font-bold">&times;</button>
+              <button onClick={() => { setEditModal(null); setNewFilesToAppend([]); }} className="text-gray-500 hover:text-red-500 text-2xl font-bold">&times;</button>
             </div>
             
-            <div className="p-6 overflow-y-auto flex-1">
+            <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <input type="text" value={editModal.title} onChange={e => setEditModal({...editModal, title: e.target.value})} className={inputClass} />
                 <select value={editModal.category} onChange={e => setEditModal({...editModal, category: e.target.value})} className={inputClass}>
@@ -174,7 +192,18 @@ const AdminGallery = () => {
                 </select>
               </div>
 
-              <h4 className="font-bold mb-3">محتويات الألبوم (انقر على ❌ لحذف صورة):</h4>
+              {/* 👈 هادي البلاصة فين كيزيد ملفات جديدة */}
+              <div className="mb-6 border-2 border-dashed border-blue-300 p-4 rounded-xl bg-blue-50 text-center relative">
+                <label className="block text-sm font-black mb-2 text-blue-600 cursor-pointer">
+                  ➕ إضافة صور أو فيديوهات جديدة لهذا الألبوم
+                </label>
+                <input type="file" multiple accept="image/*,video/*" onChange={e => setNewFilesToAppend(e.target.files)} className="w-full text-sm text-gray-500" />
+                {newFilesToAppend.length > 0 && (
+                  <p className="mt-2 text-blue-600 font-bold text-sm">سيتم إضافة {newFilesToAppend.length} ملفات جديدة عند الحفظ 📁</p>
+                )}
+              </div>
+
+              <h4 className="font-bold mb-3 text-gray-700">محتويات الألبوم الحالية (انقر على ❌ للحذف):</h4>
               <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                 {editModal.media.map((item, index) => (
                   <div key={index} className="relative h-24 bg-gray-200 rounded-lg overflow-hidden group">
@@ -183,13 +212,12 @@ const AdminGallery = () => {
                     ) : (
                       <img src={item.url} className="w-full h-full object-cover" />
                     )}
-                    {/* بوطونة باش يمسح هاد التصويرة من الألبوم */}
                     <button 
                       onClick={() => {
                         const newMedia = editModal.media.filter((_, i) => i !== index);
                         setEditModal({...editModal, media: newMedia});
                       }}
-                      className="absolute top-1 right-1 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-md hover:bg-red-700 transition"
+                      className="absolute top-1 right-1 bg-red-500/90 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-md hover:bg-red-700 transition"
                     >
                       &times;
                     </button>
@@ -199,8 +227,10 @@ const AdminGallery = () => {
             </div>
 
             <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
-              <button onClick={() => setEditModal(null)} className="px-6 py-2 bg-gray-300 rounded-lg font-bold hover:bg-gray-400">إلغاء</button>
-              <button onClick={saveAlbumEdits} className="px-6 py-2 bg-primary text-white rounded-lg font-bold hover:bg-secondary">حفظ التعديلات</button>
+              <button onClick={() => { setEditModal(null); setNewFilesToAppend([]); }} className="px-6 py-2 bg-gray-300 rounded-lg font-bold hover:bg-gray-400">إلغاء</button>
+              <button onClick={saveAlbumEdits} disabled={uploading} className={`px-6 py-2 text-white rounded-lg font-bold transition-all ${uploading ? 'bg-gray-400' : 'bg-primary hover:bg-secondary'}`}>
+                {uploading ? 'جاري الحفظ...' : 'حفظ التعديلات'}
+              </button>
             </div>
           </div>
         </div>
