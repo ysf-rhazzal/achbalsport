@@ -12,7 +12,7 @@ import Matches from './pages/Matches';
 import Trainings from './pages/Trainings';
 import Footer from './components/Footer';
 import Store from './pages/Store';
-
+import { SettingsProvider } from './context/SettingsContext';
 // صاوبنا هاد المكون باش نقدرو نخدمو بـ useLocation
 const AppContent = () => {
   const location = useLocation();
@@ -49,13 +49,15 @@ const AppContent = () => {
     </div>
   );
 };
-
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <SettingsProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </SettingsProvider>
   );
 }
+
 
 export default App;
