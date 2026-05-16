@@ -41,6 +41,7 @@ const Navbar = () => {
             <Link to="/players" className="hover:text-secondary transition duration-300">{settings?.navPlayers || 'اللاعبين'}</Link>
             <Link to="/trainings" className="hover:text-secondary transition duration-300">{settings?.navTrainings || 'التداريب'}</Link>
             <Link to="/store" className="hover:text-secondary transition duration-300">{settings?.navStore || 'المتجر'}</Link>
+            <Link to="/gallery" className="hover:text-secondary transition duration-300">المعرض</Link>
           </div>
 
           {/* زر التسجيل السريع فـ البيسي */}
@@ -81,6 +82,7 @@ const Navbar = () => {
           <Link to="/players" onClick={closeMenu} className="block hover:text-secondary transition">{settings?.navPlayers || 'اللاعبين'}</Link>
           <Link to="/trainings" onClick={closeMenu} className="block hover:text-secondary transition">{settings?.navTrainings || 'التداريب'}</Link>
           <Link to="/store" onClick={closeMenu} className="block hover:text-secondary transition">{settings?.navStore || 'المتجر'}</Link>
+          <Link to="/gallery" onClick={closeMenu} className="block hover:text-secondary transition">المعرض</Link>
           
           <div className="pt-4 border-t border-white/10">
             <Link to="/register" onClick={closeMenu} className="block text-center bg-secondary text-white py-3 rounded-lg shadow-md transition hover:bg-opacity-90">
