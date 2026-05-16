@@ -7,6 +7,7 @@ import AdminMatches from './AdminMatches';
 import AdminTrainings from './AdminTrainings';
 import AdminSettings from './AdminSettings';
 import AdminStore from './AdminStore';
+import AdminGallery from './AdminGallery'; // 👈 هانا جبنا صفحة المعرض الجديدة
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('registrations');
@@ -39,6 +40,7 @@ const Dashboard = () => {
       case 'trainings': return <AdminTrainings />;
       case 'settings': return <AdminSettings />;
       case 'store': return <AdminStore />;
+      case 'gallery': return <AdminGallery />; // 👈 زدناها هنا باش تخدم ملي نكليكيو عليها
       default: return <AdminRegistrations />;
     }
   };
@@ -50,7 +52,6 @@ const Dashboard = () => {
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-primary text-white flex items-center justify-between px-4 z-20 shadow-md">
         <h2 className="text-xl font-bold">إدارة أشبال</h2>
         <button onClick={() => setIsSidebarOpen(true)} className="p-2 hover:bg-white/10 rounded-lg transition">
-          {/* أيقونة Hamburger بـ SVG مباشرة */}
           <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
@@ -73,9 +74,7 @@ const Dashboard = () => {
       `}>
         <div className="p-6 flex items-center justify-between border-b border-white/10 mt-2 md:mt-0">
           <h2 className="text-2xl font-bold tracking-wide">إدارة أشبال</h2>
-          {/* بوطونة باش نسدو الموني فالتليفون */}
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 hover:bg-white/10 rounded-lg">
-             {/* أيقونة X بـ SVG مباشرة */}
              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -98,6 +97,12 @@ const Dashboard = () => {
           <button onClick={() => handleTabChange('trainings')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'trainings' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
             <span className="text-xl">⏱️</span> إدارة التداريب
           </button>
+          
+          {/* 👈 هادي البوطونة الجديدة ديال المعرض */}
+          <button onClick={() => handleTabChange('gallery')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'gallery' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
+            <span className="text-xl">📸</span> إدارة المعرض
+          </button>
+
           <button onClick={() => handleTabChange('store')} className={`w-full text-right px-4 py-3 rounded-xl transition-all flex items-center gap-3 ${activeTab === 'store' ? 'bg-secondary font-bold shadow-lg transform scale-105' : 'hover:bg-white/10 text-gray-300 hover:text-white'}`}>
             <span className="text-xl">🛒</span> إدارة المتجر
           </button>
@@ -115,9 +120,7 @@ const Dashboard = () => {
 
       {/* 📄 المحتوى الرئيسي */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* فراغ باش المحتوى مايتغطاش بالنافبار فالتليفون */}
         <div className="h-16 md:hidden flex-shrink-0"></div> 
-        
         <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-50/50">
             {renderContent()}
         </div>
