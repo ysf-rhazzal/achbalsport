@@ -157,10 +157,24 @@ const AdminTrainings = () => {
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inputClass} required />
           </div>
 
-          <div>
-            <label className="block text-sm font-bold mb-2 text-gray-700">التوقيت (مثال: 16:00 - 18:00)</label>
-            <input type="text" value={time} onChange={(e) => setTime(e.target.value)} className={`${inputClass} text-center font-bold tracking-widest`} required dir="ltr" />
+                   <div>
+            <label className="block text-sm font-bold mb-2 text-gray-700">التاريخ</label>
+            <div className="relative">
+              <input 
+                type="date" 
+                value={date} 
+                onChange={(e) => setDate(e.target.value)} 
+                className={`peer w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-white block appearance-none transition-all ${
+                  !date ? 'text-transparent focus:text-gray-800 [&::-webkit-calendar-picker-indicator]:opacity-0 focus:[&::-webkit-calendar-picker-indicator]:opacity-100' : 'text-gray-800'
+                }`}
+                required 
+              />
+              <span className={`absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none transition-opacity peer-focus:opacity-0 ${date ? 'opacity-0' : 'opacity-100'}`}>
+                يوم/شهر/سنة
+              </span>
+            </div>
           </div>
+
 
           <div>
             <label className="block text-sm font-bold mb-2 text-gray-700">الفئة العمرية</label>
