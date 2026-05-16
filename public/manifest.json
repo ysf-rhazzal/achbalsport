@@ -1,0 +1,8 @@
+{
+  "name": "نادي أشبال",
+  "short_name": "أشبال",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#7A0000"
+}
