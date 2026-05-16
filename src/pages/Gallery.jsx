@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { SettingsContext } from '../SettingsContext';
+import { SettingsContext } from '../context/SettingsContext';
 
 const Gallery = () => {
   const { settings } = useContext(SettingsContext);
