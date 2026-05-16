@@ -9,6 +9,7 @@ import News from './pages/News';
 import NewsDetails from './pages/NewsDetails';
 import Players from './pages/Players';
 import Matches from './pages/Matches';
+import Gallery from './pages/Gallery';
 import Trainings from './pages/Trainings';
 import Footer from './components/Footer';
 import Store from './pages/Store';
@@ -38,6 +39,7 @@ const AppContent = () => {
           <Route path="/trainings" element={<Trainings />} />
           <Route path="/store" element={<Store />} />
           <Route path="/admin/gallery" element={<AdminGallery />} />
+          <Route path="/gallery" element={<Gallery />} />
           
           {/* روابط الأدمن */}
           <Route path="/admin" element={<Login />} />
