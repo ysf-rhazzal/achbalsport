@@ -1,39 +1,23 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import NewsSection from '../components/NewsSection';
 import UpcomingMatch from '../components/UpcomingMatch';
-import LatestPlayers from '../components/LatestPlayers'; // <--- هادي جبناها
+import LatestPlayers from '../components/LatestPlayers'; 
+import { SettingsContext } from '../context/SettingsContext'; // 👈 جبنا السياق باش نقراو الإعدادات مباشرة
 
 const Home = () => {
-  const [settings, setSettings] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // 👈 نجبدو الإعدادات بلا مانعاودو نديرو axios باش السيت يبقى طيارة
+  const { settings, loadingSettings } = useContext(SettingsContext);
 
-  // جلب الإعدادات من الباكاند
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/settings');
-        // بما أننا عندنا وثيقة واحدة، الباكاند يقدر يصيفطها مباشرة أو فمصفوفة
-        setSettings(Array.isArray(response.data) ? response.data[0] : response.data);
-      } catch (error) {
-        console.error('Error fetching settings:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSettings();
-  }, []);
-
-  if (loading) return <div className="h-screen flex items-center justify-center font-bold">جاري التحميل...</div>;
+  if (loadingSettings) return <div className="h-screen flex items-center justify-center font-bold">جاري التحميل...</div>;
 
   return (
     <div>
       {/* قسم الفيديو والأزرار (Hero Section) */}
       <div className="relative h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* فيديو الخلفية - دابا ولا كيجي من الإعدادات */}
+        {/* فيديو الخلفية - كيتجبد من الإعدادات */}
         <video 
-          key={settings?.bgVideo} // key ضرورية باش الفيديو يتبدل ملي يتغير الرابط
+          key={settings?.bgVideo} 
           autoPlay 
           loop 
           muted 
@@ -44,10 +28,11 @@ const Home = () => {
         
         <div className="absolute inset-0 bg-black/60 z-10"></div>
 
-        {/* المحتوى - كولشي ولا ديناميكي */}
+        {/* المحتوى - كولشي ولا ديناميكي والديزاين بقى هو هو */}
         <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto">
+          {/* استعملنا heroTitle اللي زدنا فلوحة التحكم، يلا كان خاوي غيبان اسم النادي */}
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            {settings?.clubName || "نادي أشبال للرياضة المغربية"}
+            {settings?.heroTitle || settings?.clubName || "نادي أشبال للرياضة المغربية"}
           </h1>
           <p className="text-lg md:text-2xl mb-10 text-gray-200">
             {settings?.shortDescription || "نادي رياضي رائد في تكوين الأبطال وصناعة المستقبل"}
@@ -64,10 +49,10 @@ const Home = () => {
         </div>
       </div>
 
-{/* بلاصة هاديك الـ div القديمة حط هادي */}
-    <NewsSection />
-    <UpcomingMatch />
-    <LatestPlayers /> {/* <--- وحطيناها هنا */} {/* <--- زيدها هنا */}
+      {/* المكونات ديالك بقاو بلاصتهم */}
+      <NewsSection />
+      <UpcomingMatch />
+      <LatestPlayers />
     </div>
   );
 };
