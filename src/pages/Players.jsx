@@ -19,7 +19,7 @@ const Players = () => {
     fetchPlayers();
   }, []);
 
-  // 🧠 هاد الدالة كتعزل اللعابة بوحدها على حساب "الفئة" (Category)
+  // 🧠 عزل اللاعبين على حساب الفئة (Category)
   const groupedPlayers = players.reduce((acc, player) => {
     const category = player.category || 'فئة غير محددة';
     if (!acc[category]) {
@@ -34,7 +34,7 @@ const Players = () => {
   return (
     <div className="bg-gray-50 min-h-screen pt-24 pb-20 font-arabic" dir="rtl">
       
-      {/* 🟢 ستايل باش نخفيو داك الشريط ديال السكرول الخايب ونخليو غير الجران بالصبع */}
+      {/* 🟢 إخفاء شريط السكرول باش يبان الديزاين نقي */}
       <style>{`
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
@@ -56,24 +56,23 @@ const Players = () => {
 
         {/* عرض اللاعبين مقسمين بالفئات */}
         {Object.keys(groupedPlayers).map((category) => (
-          <div key={category} className="mb-10">
+          <div key={category} className="mb-10 overflow-hidden">
             
-            {/* عنوان الفئة (مثلا: فئة تحت 13 سنة) */}
-            <div className="flex items-center gap-4 mb-4">
+            {/* عنوان الفئة (مثلا: تحت 13 سنة) */}
+            <div className="flex items-center gap-4 mb-4 px-2">
               <h2 className="text-2xl font-black text-gray-800">{category}</h2>
-              <div className="h-px bg-gray-300 flex-1"></div> {/* خط ديكور للجنب */}
+              <div className="h-px bg-gray-300 flex-1"></div>
             </div>
 
-            {/* السلايدر الأفقي (السكرول للجنب) */}
             {/* السلايدر الأفقي (السكرول للجنب) */}
             <div className="flex overflow-x-auto gap-4 pb-4 snap-x hide-scroll px-2">
               {groupedPlayers[category].map((player) => (
                 <div 
                   key={player._id} 
-                  // 🔴 التغيير السحري هنا: درنا w-[160px] باش نفرضو العرض الثابت فالموبايل
+                  // 🔴 هنا عطيناه عرض ثابت w-[160px] باش مايتكسلش فالموبايل
                   className="shrink-0 w-[160px] md:w-[200px] snap-start bg-gray-900 rounded-xl overflow-hidden shadow-lg border border-gray-800 flex flex-col group cursor-pointer"
                 >
-                  {/* التصويرة (زدنا فـ الطول h-52 باش تجي متناسقة مع العرض الجديد) */}
+                  {/* التصويرة */}
                   <div className="relative h-52 md:h-60 bg-gray-800">
                     <img 
                       src={player.image || player.photo || 'https://via.placeholder.com/150'} 
@@ -90,18 +89,6 @@ const Players = () => {
                     )}
                   </div>
 
-                  {/* معلومات اللعاب */}
-                  <div className="p-3 text-center flex-1 flex flex-col justify-center">
-                    <span className="inline-block bg-secondary/20 text-secondary text-[10px] md:text-xs font-bold px-2 py-1 rounded-full mb-1.5 mx-auto w-fit">
-                      {player.position || 'لاعب'}
-                    </span>
-                    <h3 className="font-bold text-white text-sm md:text-base line-clamp-1">
-                      {player.name}
-                    </h3>
-                  </div>
-                </div>
-              ))}
-            </div>
                   {/* معلومات اللعاب */}
                   <div className="p-3 text-center flex-1 flex flex-col justify-center">
                     <span className="inline-block bg-secondary/20 text-secondary text-[10px] md:text-xs font-bold px-2 py-1 rounded-full mb-1.5 mx-auto w-fit">
