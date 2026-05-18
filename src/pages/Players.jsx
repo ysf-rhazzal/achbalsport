@@ -65,15 +65,16 @@ const Players = () => {
             </div>
 
             {/* السلايدر الأفقي (السكرول للجنب) */}
-            <div className="flex overflow-x-auto gap-4 pb-4 snap-x hide-scroll">
+            {/* السلايدر الأفقي (السكرول للجنب) */}
+            <div className="flex overflow-x-auto gap-4 pb-4 snap-x hide-scroll px-2">
               {groupedPlayers[category].map((player) => (
                 <div 
                   key={player._id} 
-                  // shrink-0 كتحمي الكارطة باش ماتعواجش، min-w كتعطيها عرض ثابت
-                  className="shrink-0 min-w-[150px] md:min-w-[180px] snap-start bg-gray-900 rounded-xl overflow-hidden shadow-lg border border-gray-800 flex flex-col group cursor-pointer"
+                  // 🔴 التغيير السحري هنا: درنا w-[160px] باش نفرضو العرض الثابت فالموبايل
+                  className="shrink-0 w-[160px] md:w-[200px] snap-start bg-gray-900 rounded-xl overflow-hidden shadow-lg border border-gray-800 flex flex-col group cursor-pointer"
                 >
-                  {/* التصويرة */}
-                  <div className="relative h-44 md:h-48 bg-gray-800">
+                  {/* التصويرة (زدنا فـ الطول h-52 باش تجي متناسقة مع العرض الجديد) */}
+                  <div className="relative h-52 md:h-60 bg-gray-800">
                     <img 
                       src={player.image || player.photo || 'https://via.placeholder.com/150'} 
                       alt={player.name} 
@@ -89,6 +90,18 @@ const Players = () => {
                     )}
                   </div>
 
+                  {/* معلومات اللعاب */}
+                  <div className="p-3 text-center flex-1 flex flex-col justify-center">
+                    <span className="inline-block bg-secondary/20 text-secondary text-[10px] md:text-xs font-bold px-2 py-1 rounded-full mb-1.5 mx-auto w-fit">
+                      {player.position || 'لاعب'}
+                    </span>
+                    <h3 className="font-bold text-white text-sm md:text-base line-clamp-1">
+                      {player.name}
+                    </h3>
+                  </div>
+                </div>
+              ))}
+            </div>
                   {/* معلومات اللعاب */}
                   <div className="p-3 text-center flex-1 flex flex-col justify-center">
                     <span className="inline-block bg-secondary/20 text-secondary text-[10px] md:text-xs font-bold px-2 py-1 rounded-full mb-1.5 mx-auto w-fit">
