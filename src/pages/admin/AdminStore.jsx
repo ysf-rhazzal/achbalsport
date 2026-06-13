@@ -17,7 +17,7 @@ const AdminStore = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/products');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/products');
       setProducts(response.data);
     } catch (error) {
       console.error(error);
@@ -75,7 +75,7 @@ const AdminStore = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/products/${editingId}`, formData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal6.replit.app/api/products/${editingId}`, formData, {
           // حيدنا Content-Type باش نخليو Axios يصاوب Boundary لراسو
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -87,7 +87,7 @@ const AdminStore = () => {
           confirmButtonColor: '#1a2e44',
         });
       } else {
-        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/products', formData, {
+        await axios.post('https://achbalsportive--youssefrhazzal6.replit.app/api/products', formData, {
           // حيدنا Content-Type حتى هنا
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -126,7 +126,7 @@ const AdminStore = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/products/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal6.replit.app/api/products/${id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
           });
           fetchProducts();
