@@ -15,7 +15,7 @@ const Track = () => {
     setResult(null);
 
     try {
-      const response = await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/registrations/track', {
+      const response = await axios.post('https://achbalsportive--youssefrhazzal6.replit.app/api/registrations/track', {
         fileNumber,
         phone
       });
