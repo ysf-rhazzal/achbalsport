@@ -11,7 +11,7 @@ const AdminRegistrations = () => {
     const fetchRegistrations = async () => {
       const token = localStorage.getItem('adminToken');
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/registrations', {
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/registrations', {
             headers: { Authorization: `Bearer ${token}` }
         });
         setRegistrations(response.data);
@@ -27,7 +27,7 @@ const AdminRegistrations = () => {
   const handleStatusChange = async (id, newStatus) => {
     try {
       const token = localStorage.getItem('adminToken');
-      await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/registrations/${id}/status`, 
+      await axios.put(`https://achbalsportive--youssefrhazzal6.replit.app/api/registrations/${id}/status`, 
         { status: newStatus, adminNote: 'تمت المراجعة من طرف الإدارة' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
