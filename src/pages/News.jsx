@@ -9,7 +9,7 @@ const News = () => {
   useEffect(() => {
     const fetchAllNews = async () => {
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/news');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/news');
         setNews(response.data);
       } catch (error) {
         console.error('Error fetching news:', error);
