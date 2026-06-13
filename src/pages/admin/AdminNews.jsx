@@ -17,7 +17,7 @@ const AdminNews = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/news');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/news');
       setNews(response.data);
     } catch (error) {
       console.error('مشكل فجلب الأخبار', error);
@@ -66,7 +66,7 @@ const AdminNews = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/news/${editingId}`, formData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal6.replit.app/api/news/${editingId}`, formData, {
           // حيدنا Content-Type باش نخليو المتصفح يتكلف ويصيفط التصويرة مزيان
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -77,7 +77,7 @@ const AdminNews = () => {
           confirmButtonColor: '#1a2e44'
         });
       } else {
-        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/news', formData, {
+        await axios.post('https://achbalsportive--youssefrhazzal6.replit.app/api/news', formData, {
           // حيدنا Content-Type حتى هنا
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -115,7 +115,7 @@ const AdminNews = () => {
       if (result.isConfirmed) {
         const token = localStorage.getItem('adminToken');
         try {
-          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/news/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal6.replit.app/api/news/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           Swal.fire('تم المسح!', 'تم حذف الخبر بنجاح.', 'success');
