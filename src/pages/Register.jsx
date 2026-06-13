@@ -48,7 +48,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/registrations/register', data, {
+      const response = await axios.post('https://achbalsportive--youssefrhazzal6.replit.app/api/registrations/register', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setFileNumber(response.data.fileNumber); 
