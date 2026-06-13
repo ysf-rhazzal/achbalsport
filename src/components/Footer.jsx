@@ -8,7 +8,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/settings');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/settings');
         setSettings(Array.isArray(response.data) ? response.data[0] : response.data);
       } catch (error) {
         console.error('Error fetching settings for footer:', error);
