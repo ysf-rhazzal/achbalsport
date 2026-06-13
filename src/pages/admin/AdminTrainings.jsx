@@ -18,7 +18,7 @@ const AdminTrainings = () => {
 
   const fetchTrainings = async () => {
     try {
-      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/trainings');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/trainings');
       setTrainings(response.data);
     } catch (error) {
       console.error('مشكل فجلب التداريب', error);
@@ -64,7 +64,7 @@ const AdminTrainings = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/trainings/${editingId}`, trainingData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal6.replit.app/api/trainings/${editingId}`, trainingData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -74,7 +74,7 @@ const AdminTrainings = () => {
           confirmButtonColor: '#1a2e44'
         });
       } else {
-        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/trainings', trainingData, {
+        await axios.post('https://achbalsportive--youssefrhazzal6.replit.app/api/trainings', trainingData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -111,7 +111,7 @@ const AdminTrainings = () => {
       if (result.isConfirmed) {
         const token = localStorage.getItem('adminToken');
         try {
-          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/trainings/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal6.replit.app/api/trainings/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           Swal.fire('تم المسح!', 'تم حذف الحصة بنجاح.', 'success');
