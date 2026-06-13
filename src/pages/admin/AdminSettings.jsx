@@ -23,7 +23,7 @@ const AdminSettings = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/settings');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/settings');
         if (response.data) {
           setFormData(response.data);
           setExistingLogo(response.data.logo || '');
@@ -57,7 +57,7 @@ const AdminSettings = () => {
     if (logo) data.append('logo', logo);
 
     try {
-      await axios.put('https://achbalsportive--youssefrhazzal9.replit.app/api/settings', data, {
+      await axios.put('https://achbalsportive--youssefrhazzal6.replit.app/api/settings', data, {
         headers: { Authorization: `Bearer ${token}` }
       });
       Swal.fire('تم الحفظ!', 'تم تحديث الموقع بنجاح. دير ريفريش للسيت باش تشوف التغيير.', 'success');
