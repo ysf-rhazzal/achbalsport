@@ -16,7 +16,7 @@ const AdminGallery = () => {
 
   const fetchGallery = async () => {
     try {
-      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/gallery');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/gallery');
       setAlbums(response.data);
     } catch (error) {
       console.error('Error fetching gallery:', error);
@@ -44,7 +44,7 @@ const AdminGallery = () => {
     }
 
     try {
-      await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/gallery', data, {
+      await axios.post('https://achbalsportive--youssefrhazzal6.replit.app/api/gallery', data, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
       Swal.fire('تم!', 'تم إنشاء الألبوم بنجاح.', 'success');
@@ -70,7 +70,7 @@ const AdminGallery = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const token = localStorage.getItem('adminToken');
-        await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${id}`, {
+        await axios.delete(`https://achbalsportive--youssefrhazzal6.replit.app/api/gallery/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAlbums(albums.filter(album => album._id !== id));
@@ -98,7 +98,7 @@ const AdminGallery = () => {
         }
       }
 
-      await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/gallery/${editModal._id}`, data, {
+      await axios.put(`https://achbalsportive--youssefrhazzal6.replit.app/api/gallery/${editModal._id}`, data, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
 
