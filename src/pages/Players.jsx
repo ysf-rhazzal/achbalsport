@@ -8,7 +8,7 @@ const Players = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/players');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/players');
         setPlayers(response.data);
       } catch (error) {
         console.error('Error fetching players:', error);
