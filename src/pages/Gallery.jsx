@@ -12,7 +12,7 @@ const Gallery = () => {
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/gallery');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/gallery');
         setAlbums(response.data);
       } catch (error) {
         console.error('Error fetching gallery:', error);
