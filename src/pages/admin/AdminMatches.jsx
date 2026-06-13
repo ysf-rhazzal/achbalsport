@@ -23,7 +23,7 @@ const AdminMatches = () => {
 
   const fetchMatches = async () => {
     try {
-      const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/matches');
+      const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/matches');
       setMatches(response.data);
     } catch (error) {
       console.error(error);
@@ -100,7 +100,7 @@ const AdminMatches = () => {
 
     try {
       if (editingId) {
-        await axios.put(`https://achbalsportive--youssefrhazzal9.replit.app/api/matches/${editingId}`, formData, {
+        await axios.put(`https://achbalsportive--youssefrhazzal6.replit.app/api/matches/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -110,7 +110,7 @@ const AdminMatches = () => {
           confirmButtonColor: '#1a2e44'
         });
       } else {
-        await axios.post('https://achbalsportive--youssefrhazzal9.replit.app/api/matches', formData, {
+        await axios.post('https://achbalsportive--youssefrhazzal6.replit.app/api/matches', formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
         Swal.fire({
@@ -146,7 +146,7 @@ const AdminMatches = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`https://achbalsportive--youssefrhazzal9.replit.app/api/matches/${id}`, {
+          await axios.delete(`https://achbalsportive--youssefrhazzal6.replit.app/api/matches/${id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
           });
           fetchMatches();
