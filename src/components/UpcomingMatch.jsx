@@ -8,7 +8,7 @@ const UpcomingMatch = () => {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/matches');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/matches');
         const upcoming = response.data
           .filter(m => m.score === "-:-")
           .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
