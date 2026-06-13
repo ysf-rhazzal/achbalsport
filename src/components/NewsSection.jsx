@@ -9,7 +9,7 @@ const NewsSection = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get('https://achbalsportive--youssefrhazzal9.replit.app/api/news');
+        const response = await axios.get('https://achbalsportive--youssefrhazzal6.replit.app/api/news');
         // نأخذ فقط آخر 3 أخبار
         setNews(response.data.slice(0, 3));
       } catch (error) {
